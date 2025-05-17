@@ -1,48 +1,23 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import DashboardLayout from "../../components/layout/DashboardLayout"
-import { transactionsService } from "../../services/transactions.service"
-import { usersService } from "@/services/users.service"
-import { Transaction } from "../../types/transaction.types"
+import TransaccionesTableHeader from "@/components/transacciones/TransaccionesTableHeader"
+import TransaccionesTableBody from "@/components/transacciones/TransaccionesTableBody"
+import { useHandleTransactionsMethods } from "@/hooks/transactions/useHandleTransactionsMethods"
 
 const TransaccionesPage = () => {
   const router = useRouter()
-  const [transactions, setTransactions] = useState<Transaction[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const { transactions, isLoading, error, fetchTransactions, handleDelete } =
+    useHandleTransactionsMethods()
 
   useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const userData = await usersService.me()
-        setIsLoading(true)
-        const userId = userData.id
-        const data = await transactionsService.findAll(userId)
-        setTransactions(data)
-      } catch (err) {
-        console.error("Error fetching transactions:", err)
-        setError("No se pudieron cargar las transacciones")
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
     fetchTransactions()
   }, [])
 
   const handleNuevaTransaccion = () => {
     router.push("/transacciones/nueva")
-  }
-
-  const formatCategoryName = (categoryId: string | undefined): string => {
-    if (!categoryId) return "Sin categoría"
-
-    return (
-      categoryId.replace("cat-", "").charAt(0).toUpperCase() +
-      categoryId.replace("cat-", "").slice(1)
-    )
   }
 
   return (
@@ -109,84 +84,11 @@ const TransaccionesPage = () => {
           <>
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead className="bg-gray-50 dark:bg-gray-700">
-                  <tr>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-                    >
-                      Descripción
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-                    >
-                      Categoría
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-                    >
-                      Fecha
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-                    >
-                      Monto
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-                    >
-                      Acciones
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                  {transactions.map((transaction) => (
-                    <tr key={transaction.id}>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                          {transaction.description || "Sin descripción"}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500 dark:text-gray-400">
-                          {formatCategoryName(transaction.category_id)}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500 dark:text-gray-400">
-                          {new Date(
-                            transaction.transaction_date,
-                          ).toLocaleDateString()}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div
-                          className={`text-sm font-medium ${
-                            transaction.type === "income"
-                              ? "text-green-600 dark:text-green-400"
-                              : "text-red-600 dark:text-red-400"
-                          }`}
-                        >
-                          {transaction.type === "income" ? "+" : "-"}$
-                          {Math.abs(transaction.amount).toFixed(2)}{" "}
-                          {transaction.currency}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                        <button className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 mr-3">
-                          Editar
-                        </button>
-                        <button className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300">
-                          Eliminar
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
+                <TransaccionesTableHeader />
+                <TransaccionesTableBody
+                  transactions={transactions}
+                  handleDelete={handleDelete}
+                />
               </table>
             </div>
 
