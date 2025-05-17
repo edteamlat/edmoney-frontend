@@ -1,36 +1,18 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import DashboardLayout from "../../components/layout/DashboardLayout"
-import { transactionsService } from "../../services/transactions.service"
-import { usersService } from "@/services/users.service"
-import { Transaction } from "../../types/transaction.types"
 import TransaccionesTableHeader from "@/components/transacciones/TransaccionesTableHeader"
 import TransaccionesTableBody from "@/components/transacciones/TransaccionesTableBody"
+import { useHandleTransactionsMethods } from "@/hooks/transactions/useHandleTransactionsMethods"
 
 const TransaccionesPage = () => {
   const router = useRouter()
-  const [transactions, setTransactions] = useState<Transaction[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const { transactions, isLoading, error, fetchTransactions, handleDelete } =
+    useHandleTransactionsMethods()
 
   useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const userData = await usersService.me()
-        setIsLoading(true)
-        const userId = userData.id
-        const data = await transactionsService.findAll(userId)
-        setTransactions(data)
-      } catch (err) {
-        console.error("Error fetching transactions:", err)
-        setError("No se pudieron cargar las transacciones")
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
     fetchTransactions()
   }, [])
 
@@ -103,7 +85,10 @@ const TransaccionesPage = () => {
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <TransaccionesTableHeader />
-                <TransaccionesTableBody transactions={transactions} />
+                <TransaccionesTableBody
+                  transactions={transactions}
+                  handleDelete={handleDelete}
+                />
               </table>
             </div>
 

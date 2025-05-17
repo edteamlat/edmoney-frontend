@@ -1,13 +1,15 @@
 import React from "react"
 import { Transaction } from "../../types/transaction.types"
-import { formatCategoryName } from "@/helpers/format-category-name"
+import { formatCategoryName } from "@/helpers/format-category-name.helper"
 
 interface TransaccionesTableBodyProps {
   transactions: Transaction[]
+  handleDelete: (transactionId: string) => Promise<void>
 }
 
 const TransaccionesTableBody = ({
   transactions,
+  handleDelete,
 }: TransaccionesTableBodyProps) => {
   return (
     <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -44,7 +46,10 @@ const TransaccionesTableBody = ({
             <button className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 mr-3">
               Editar
             </button>
-            <button className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300">
+            <button
+              className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 cursor-pointer"
+              onClick={() => handleDelete(transaction.id)}
+            >
               Eliminar
             </button>
           </td>
