@@ -42,9 +42,7 @@ const RecentTransactions = ({ transactions }: RecentTransactionsProps) => {
 
         {transactions.length === 0 && (
           <div className="py-8 text-center">
-            <p className="text-gray-500 dark:text-gray-400">
-              No hay transacciones recientes
-            </p>
+            <p className="text-gray-500 dark:text-gray-400">No hay transacciones recientes</p>
           </div>
         )}
       </div>

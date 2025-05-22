@@ -33,7 +33,7 @@ export class CategoriesService {
   public async findAll(
     userId?: string,
     type?: TransactionType,
-    isDefault?: boolean,
+    isDefault?: boolean
   ): Promise<Category[]> {
     let url = "/categories"
     const params = new URLSearchParams()
@@ -54,9 +54,7 @@ export class CategoriesService {
    * @param id Category ID
    */
   public async findOne(id: string): Promise<Category> {
-    const response = await this.apiService.get<CategoryResponse>(
-      `/categories/${id}`,
-    )
+    const response = await this.apiService.get<CategoryResponse>(`/categories/${id}`)
     return response.data.category
   }
 
@@ -65,10 +63,7 @@ export class CategoriesService {
    * @param userId User ID
    * @param type Optional transaction type
    */
-  public async findByUser(
-    userId: string,
-    type?: TransactionType,
-  ): Promise<Category[]> {
+  public async findByUser(userId: string, type?: TransactionType): Promise<Category[]> {
     let url = `/categories/user/${userId}`
     if (type) url += `?type=${type}`
 
@@ -81,10 +76,7 @@ export class CategoriesService {
    * @param createCategoryDto Category data to create
    */
   public async create(createCategoryDto: CreateCategoryDto): Promise<Category> {
-    const response = await this.apiService.post<CategoryResponse>(
-      "/categories",
-      createCategoryDto,
-    )
+    const response = await this.apiService.post<CategoryResponse>("/categories", createCategoryDto)
     return response.data.category
   }
 
@@ -93,13 +85,10 @@ export class CategoriesService {
    * @param id Category ID
    * @param updateCategoryDto Category data to update
    */
-  public async update(
-    id: string,
-    updateCategoryDto: UpdateCategoryDto,
-  ): Promise<Category> {
+  public async update(id: string, updateCategoryDto: UpdateCategoryDto): Promise<Category> {
     const response = await this.apiService.patch<CategoryResponse>(
       `/categories/${id}`,
-      updateCategoryDto,
+      updateCategoryDto
     )
     return response.data.category
   }

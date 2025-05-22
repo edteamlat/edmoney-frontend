@@ -1,10 +1,5 @@
 import { ApiService } from "./api.service"
-import {
-  UpdateUserDto,
-  User,
-  UserResponse,
-  UsersResponse,
-} from "../types/user.types"
+import { UpdateUserDto, User, UserResponse, UsersResponse } from "../types/user.types"
 
 export class UsersService {
   private apiService: ApiService
@@ -45,10 +40,7 @@ export class UsersService {
    * @param updateUserDto User data to update
    */
   public async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    const response = await this.apiService.patch<UserResponse>(
-      `/users/${id}`,
-      updateUserDto,
-    )
+    const response = await this.apiService.patch<UserResponse>(`/users/${id}`, updateUserDto)
     return response.data.user
   }
 
@@ -57,9 +49,7 @@ export class UsersService {
    * @param id User ID
    */
   public async remove(id: string): Promise<{ message: string }> {
-    const response = await this.apiService.delete<{ message: string }>(
-      `/users/${id}`,
-    )
+    const response = await this.apiService.delete<{ message: string }>(`/users/${id}`)
     return response.data
   }
 

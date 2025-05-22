@@ -10,8 +10,8 @@ export function Plans() {
             Planes sencillos y flexibles
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Escoge el plan que mejor se adapte a tus necesidades y comienza a
-            gestionar tus finanzas.
+            Escoge el plan que mejor se adapte a tus necesidades y comienza a gestionar tus
+            finanzas.
           </p>
         </div>
 

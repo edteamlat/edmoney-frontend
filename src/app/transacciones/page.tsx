@@ -49,12 +49,8 @@ const TransaccionesPage = () => {
     <DashboardLayout>
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-            Transacciones
-          </h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">
-            Gestiona tus ingresos y egresos
-          </p>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Transacciones</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">Gestiona tus ingresos y egresos</p>
         </div>
 
         <button
@@ -97,9 +93,7 @@ const TransaccionesPage = () => {
 
         {isLoading ? (
           <div className="py-16 text-center">
-            <p className="text-gray-500 dark:text-gray-400">
-              Cargando transacciones...
-            </p>
+            <p className="text-gray-500 dark:text-gray-400">Cargando transacciones...</p>
           </div>
         ) : error ? (
           <div className="py-16 text-center">
@@ -158,9 +152,7 @@ const TransaccionesPage = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-500 dark:text-gray-400">
-                          {new Date(
-                            transaction.transaction_date,
-                          ).toLocaleDateString()}
+                          {new Date(transaction.transaction_date).toLocaleDateString()}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -172,8 +164,7 @@ const TransaccionesPage = () => {
                           }`}
                         >
                           {transaction.type === "income" ? "+" : "-"}$
-                          {Math.abs(transaction.amount).toFixed(2)}{" "}
-                          {transaction.currency}
+                          {Math.abs(transaction.amount).toFixed(2)} {transaction.currency}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
@@ -192,9 +183,7 @@ const TransaccionesPage = () => {
 
             {transactions.length === 0 && (
               <div className="py-8 text-center">
-                <p className="text-gray-500 dark:text-gray-400">
-                  No hay transacciones registradas
-                </p>
+                <p className="text-gray-500 dark:text-gray-400">No hay transacciones registradas</p>
               </div>
             )}
           </>

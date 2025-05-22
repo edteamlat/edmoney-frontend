@@ -23,9 +23,7 @@ const DashboardPage = () => {
     totalExpense: number
     currency: string
   } | null>(null)
-  const [recentTransactions, setRecentTransactions] = useState<Transaction[]>(
-    [],
-  )
+  const [recentTransactions, setRecentTransactions] = useState<Transaction[]>([])
 
   const { user, isLoading: isUserLoading } = useUser()
 
@@ -60,9 +58,7 @@ const DashboardPage = () => {
   return (
     <>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-          Dashboard
-        </h1>
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Dashboard</h1>
 
         <div className="flex items-center mt-2">
           <span className="text-gray-500 dark:text-gray-400">

@@ -17,10 +17,8 @@ export default function Providers({ children }: ProvidersProps) {
             refetchOnWindowFocus: false,
           },
         },
-      }),
+      })
   )
 
-  return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  )
+  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 }

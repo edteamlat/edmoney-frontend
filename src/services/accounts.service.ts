@@ -28,10 +28,7 @@ export class AccountsService {
    * @param createAccountDto Account data to create
    */
   public async create(createAccountDto: CreateAccountDto): Promise<Account> {
-    const response = await this.apiService.post<AccountResponse>(
-      "/accounts",
-      createAccountDto,
-    )
+    const response = await this.apiService.post<AccountResponse>("/accounts", createAccountDto)
     return response.data.account
   }
 
@@ -40,9 +37,7 @@ export class AccountsService {
    * @param userId User ID
    */
   public async findAll(userId: string): Promise<Account[]> {
-    const response = await this.apiService.get<AccountsResponse>(
-      `/accounts?userId=${userId}`,
-    )
+    const response = await this.apiService.get<AccountsResponse>(`/accounts?userId=${userId}`)
     return response.data.accounts
   }
 
@@ -52,9 +47,7 @@ export class AccountsService {
    * @param userId User ID
    */
   public async findOne(id: string, userId: string): Promise<Account> {
-    const response = await this.apiService.get<AccountResponse>(
-      `/accounts/${id}?userId=${userId}`,
-    )
+    const response = await this.apiService.get<AccountResponse>(`/accounts/${id}?userId=${userId}`)
     return response.data.account
   }
 
@@ -63,13 +56,10 @@ export class AccountsService {
    * @param id Account ID
    * @param updateAccountDto Account data to update
    */
-  public async update(
-    id: string,
-    updateAccountDto: UpdateAccountDto,
-  ): Promise<Account> {
+  public async update(id: string, updateAccountDto: UpdateAccountDto): Promise<Account> {
     const response = await this.apiService.patch<AccountResponse>(
       `/accounts/${id}`,
-      updateAccountDto,
+      updateAccountDto
     )
     return response.data.account
   }

@@ -31,12 +31,10 @@ export class TransactionsService {
    * Create a new transaction
    * @param createTransactionDto Transaction data to create
    */
-  public async create(
-    createTransactionDto: CreateTransactionDto,
-  ): Promise<Transaction> {
+  public async create(createTransactionDto: CreateTransactionDto): Promise<Transaction> {
     const response = await this.apiService.post<TransactionResponse>(
       "/transactions",
-      createTransactionDto,
+      createTransactionDto
     )
     return response.data.transaction
   }
@@ -47,7 +45,7 @@ export class TransactionsService {
    */
   public async findAll(userId: string): Promise<Transaction[]> {
     const response = await this.apiService.get<TransactionsResponse>(
-      `/transactions?userId=${userId}`,
+      `/transactions?userId=${userId}`
     )
     return response.data.transactions
   }
@@ -57,7 +55,7 @@ export class TransactionsService {
    * @param queryParams Query parameters
    */
   public async queryTransactions(
-    queryParams: QueryTransactionsDto,
+    queryParams: QueryTransactionsDto
   ): Promise<PaginatedTransactions> {
     const params = new URLSearchParams()
 
@@ -69,7 +67,7 @@ export class TransactionsService {
     })
 
     const response = await this.apiService.get<PaginatedTransactions>(
-      `/transactions/query?${params.toString()}`,
+      `/transactions/query?${params.toString()}`
     )
     return response.data
   }
@@ -79,12 +77,9 @@ export class TransactionsService {
    * @param recurringId Recurring ID
    * @param userId User ID
    */
-  public async findByRecurringId(
-    recurringId: string,
-    userId: string,
-  ): Promise<Transaction[]> {
+  public async findByRecurringId(recurringId: string, userId: string): Promise<Transaction[]> {
     const response = await this.apiService.get<TransactionsResponse>(
-      `/transactions/recurring/${recurringId}?userId=${userId}`,
+      `/transactions/recurring/${recurringId}?userId=${userId}`
     )
     return response.data.transactions
   }
@@ -96,7 +91,7 @@ export class TransactionsService {
    */
   public async findOne(id: string, userId: string): Promise<Transaction> {
     const response = await this.apiService.get<TransactionResponse>(
-      `/transactions/${id}?userId=${userId}`,
+      `/transactions/${id}?userId=${userId}`
     )
     return response.data.transaction
   }
@@ -108,11 +103,11 @@ export class TransactionsService {
    */
   public async update(
     id: string,
-    updateTransactionDto: UpdateTransactionDto,
+    updateTransactionDto: UpdateTransactionDto
   ): Promise<Transaction> {
     const response = await this.apiService.patch<TransactionResponse>(
       `/transactions/${id}`,
-      updateTransactionDto,
+      updateTransactionDto
     )
     return response.data.transaction
   }
@@ -135,12 +130,13 @@ export class TransactionsService {
   public async createFromPrompt(
     message: string,
     context: string,
-    image?: string,
+    image?: string
   ): Promise<TransactionResponse> {
-    const response = await axios.post<TransactionResponse>(
-      "/api/transactions",
-      { message, context, image },
-    )
+    const response = await axios.post<TransactionResponse>("/api/transactions", {
+      message,
+      context,
+      image,
+    })
     return response.data
   }
 
@@ -154,15 +150,11 @@ export class TransactionsService {
     formData.append("audio", audioBlob, "voice_recording.webm")
 
     // Send the audio file to the transcription endpoint
-    const response = await axios.post<{ text: string }>(
-      "/api/transcribe",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+    const response = await axios.post<{ text: string }>("/api/transcribe", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
       },
-    )
+    })
 
     return response.data.text
   }
@@ -171,9 +163,7 @@ export class TransactionsService {
    * Get totals by period
    * @param params Period parameters
    */
-  public async getTotalsByPeriod(
-    params: TotalsByPeriodDto,
-  ): Promise<Record<string, number>> {
+  public async getTotalsByPeriod(params: TotalsByPeriodDto): Promise<Record<string, number>> {
     const queryParams = new URLSearchParams()
 
     // Add all non-undefined params to the query string
@@ -184,7 +174,7 @@ export class TransactionsService {
     })
 
     const response = await this.apiService.get<Record<string, number>>(
-      `/transactions/totals?${queryParams.toString()}`,
+      `/transactions/totals?${queryParams.toString()}`
     )
     return response.data
   }
@@ -212,7 +202,7 @@ export class TransactionsService {
    */
   public async getRecentTransactions(userId: string): Promise<Transaction[]> {
     const response = await this.apiService.get<TransactionsResponse>(
-      `/transactions/recent?userId=${userId}`,
+      `/transactions/recent?userId=${userId}`
     )
     return response.data.transactions || response.data
   }

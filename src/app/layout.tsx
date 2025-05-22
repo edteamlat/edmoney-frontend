@@ -16,8 +16,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "EDmoney - Gestión Financiera",
-  description:
-    "Aplicación para el seguimiento y control de finanzas personales",
+  description: "Aplicación para el seguimiento y control de finanzas personales",
 }
 
 export default function RootLayout({

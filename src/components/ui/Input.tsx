@@ -1,7 +1,6 @@
 import { forwardRef } from "react"
 
-export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string
   error?: string
   containerClassName?: string
@@ -22,7 +21,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       id,
       ...props
     },
-    ref,
+    ref
   ) => {
     const inputId = id || `input-${label?.toLowerCase().replace(/\s+/g, "-")}`
 
@@ -48,15 +47,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           {...props}
         />
         {error && (
-          <p
-            className={`mt-1 text-sm text-red-600 dark:text-red-400 ${errorClassName}`}
-          >
-            {error}
-          </p>
+          <p className={`mt-1 text-sm text-red-600 dark:text-red-400 ${errorClassName}`}>{error}</p>
         )}
       </div>
     )
-  },
+  }
 )
 
 Input.displayName = "Input"

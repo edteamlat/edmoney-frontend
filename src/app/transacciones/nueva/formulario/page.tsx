@@ -11,9 +11,7 @@ const TransactionFormPage = () => {
   return (
     <DashboardLayout>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-          Nueva Transacción
-        </h1>
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Nueva Transacción</h1>
         <p className="text-gray-500 dark:text-gray-400 mt-1">
           Completa el formulario para registrar una nueva transacción
         </p>

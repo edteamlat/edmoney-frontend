@@ -46,13 +46,9 @@ export function PlanCard({
       )}
 
       <div className="p-8">
-        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
-          {name}
-        </h3>
+        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">{name}</h3>
         <div className="mt-4 flex items-baseline">
-          <span className="text-4xl font-extrabold text-gray-900 dark:text-gray-100">
-            {price}
-          </span>
+          <span className="text-4xl font-extrabold text-gray-900 dark:text-gray-100">{price}</span>
           <span className="ml-1 text-xl font-semibold text-gray-500 dark:text-gray-400">
             {period}
           </span>
@@ -75,9 +71,7 @@ export function PlanCard({
                   clipRule="evenodd"
                 ></path>
               </svg>
-              <span className="ml-2 text-gray-600 dark:text-gray-400">
-                {feature.text}
-              </span>
+              <span className="ml-2 text-gray-600 dark:text-gray-400">{feature.text}</span>
             </li>
           ))}
         </ul>

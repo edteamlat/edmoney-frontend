@@ -10,11 +10,7 @@ interface TransactionPromptModalProps {
   response: TransactionPromptResponse | null
 }
 
-export function TransactionPromptModal({
-  isOpen,
-  onClose,
-  response,
-}: TransactionPromptModalProps) {
+export function TransactionPromptModal({ isOpen, onClose, response }: TransactionPromptModalProps) {
   const [isSaving, setIsSaving] = useState(false)
   const [saveResult, setSaveResult] = useState<{
     status: "success" | "error"
@@ -86,9 +82,7 @@ export function TransactionPromptModal({
                 <div className="space-y-4">
                   <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-md">
                     <div className="mb-2">
-                      <span className="font-medium text-gray-700 dark:text-gray-300">
-                        Tipo:{" "}
-                      </span>
+                      <span className="font-medium text-gray-700 dark:text-gray-300">Tipo: </span>
                       <span
                         className={`px-2 py-1 rounded text-sm ${
                           response.transaction.type === "expense"
@@ -96,21 +90,14 @@ export function TransactionPromptModal({
                             : "bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300"
                         }`}
                       >
-                        {response.transaction.type === "expense"
-                          ? "Gasto"
-                          : "Ingreso"}
+                        {response.transaction.type === "expense" ? "Gasto" : "Ingreso"}
                       </span>
                     </div>
 
                     <div className="mb-2">
-                      <span className="font-medium text-gray-700 dark:text-gray-300">
-                        Monto:{" "}
-                      </span>
+                      <span className="font-medium text-gray-700 dark:text-gray-300">Monto: </span>
                       <span className="font-semibold dark:text-gray-200">
-                        {formatCurrency(
-                          response.transaction.amount,
-                          response.transaction.currency,
-                        )}
+                        {formatCurrency(response.transaction.amount, response.transaction.currency)}
                       </span>
                     </div>
 
@@ -124,13 +111,9 @@ export function TransactionPromptModal({
                     </div>
 
                     <div className="mb-2">
-                      <span className="font-medium text-gray-700 dark:text-gray-300">
-                        Fecha:{" "}
-                      </span>
+                      <span className="font-medium text-gray-700 dark:text-gray-300">Fecha: </span>
                       <span className="dark:text-gray-200">
-                        {new Date(
-                          response.transaction.transaction_date,
-                        ).toLocaleDateString()}
+                        {new Date(response.transaction.transaction_date).toLocaleDateString()}
                       </span>
                     </div>
 
@@ -159,9 +142,7 @@ export function TransactionPromptModal({
                   Respuesta
                 </h3>
                 <div>
-                  <p className="text-md text-gray-500 dark:text-gray-400">
-                    {response.message}
-                  </p>
+                  <p className="text-md text-gray-500 dark:text-gray-400">{response.message}</p>
                 </div>
               </div>
             )}

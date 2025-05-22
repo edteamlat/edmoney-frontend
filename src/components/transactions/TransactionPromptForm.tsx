@@ -26,10 +26,7 @@ const isIOS = () => {
   )
 }
 
-export function TransactionPromptForm({
-  onResponse,
-  setLoading,
-}: TransactionPromptFormProps) {
+export function TransactionPromptForm({ onResponse, setLoading }: TransactionPromptFormProps) {
   const [imageBase64, setImageBase64] = useState<string | null>(null)
   const [imageName, setImageName] = useState<string | null>(null)
   const [isDragging, setIsDragging] = useState(false)
@@ -52,11 +49,7 @@ export function TransactionPromptForm({
 
   // Initialize audio context on iOS devices within a user gesture
   const initAudioContext = () => {
-    if (
-      typeof window !== "undefined" &&
-      isIOSDevice.current &&
-      !audioContextRef.current
-    ) {
+    if (typeof window !== "undefined" && isIOSDevice.current && !audioContextRef.current) {
       try {
         // Create AudioContext on iOS only in response to a user gesture
         type AudioContextType = typeof window.AudioContext
@@ -65,8 +58,7 @@ export function TransactionPromptForm({
         }
         const AudioContextConstructor: AudioContextType =
           window.AudioContext ||
-          ((window as WindowWithWebkitAudio)
-            .webkitAudioContext as AudioContextType)
+          ((window as WindowWithWebkitAudio).webkitAudioContext as AudioContextType)
         audioContextRef.current = new AudioContextConstructor()
 
         // Some iOS versions require an additional step to "unlock" the audio context
@@ -126,9 +118,7 @@ export function TransactionPromptForm({
           // Initialize audio context for iOS devices (will be activated on user gesture)
           if (isIOSDevice.current) {
             // Will be unlocked on user action
-            console.log(
-              "iOS device detected, audio context will be initialized on user gesture",
-            )
+            console.log("iOS device detected, audio context will be initialized on user gesture")
           } else {
             // Mark as ready for non-iOS devices
             setIsAudioContextReady(true)
@@ -259,9 +249,7 @@ export function TransactionPromptForm({
 
         // Check if blob is valid (has size greater than header-only)
         if (blob.size <= 44) {
-          console.error(
-            "Error: Recording produced an empty audio file (only headers)",
-          )
+          console.error("Error: Recording produced an empty audio file (only headers)")
           // Try again on iOS
           if (isIOSDevice.current) {
             alert("Error recording audio. Please try again.")
@@ -278,9 +266,7 @@ export function TransactionPromptForm({
     } catch (error) {
       console.error("Error starting recording:", error)
       if (isIOSDevice.current) {
-        alert(
-          "Error accessing microphone. Please ensure permissions are granted and try again.",
-        )
+        alert("Error accessing microphone. Please ensure permissions are granted and try again.")
       }
     }
   }
@@ -292,9 +278,7 @@ export function TransactionPromptForm({
 
       // Stop all audio tracks
       if (audioRecorder.current.stream) {
-        audioRecorder.current.stream
-          .getTracks()
-          .forEach((track) => track.stop())
+        audioRecorder.current.stream.getTracks().forEach((track) => track.stop())
       }
     }
   }
@@ -356,7 +340,7 @@ export function TransactionPromptForm({
       const response = await transactionsService.createFromPrompt(
         data.message,
         contextDefault,
-        imageBase64 || undefined,
+        imageBase64 || undefined
       )
       onResponse({
         transaction: response.transaction,
@@ -381,11 +365,7 @@ export function TransactionPromptForm({
       setValue("message", text, { shouldValidate: true })
 
       // Create a transaction using the transcribed text
-      const response = await transactionsService.createFromPrompt(
-        text,
-        contextDefault,
-        undefined,
-      )
+      const response = await transactionsService.createFromPrompt(text, contextDefault, undefined)
 
       // Process the response
       onResponse({
@@ -401,10 +381,7 @@ export function TransactionPromptForm({
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="space-y-4 dark:text-gray-200"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 dark:text-gray-200">
       <div>
         <div className="mt-4">
           <div
@@ -435,9 +412,7 @@ export function TransactionPromptForm({
                     className="max-h-40 max-w-full object-contain dark:border dark:border-gray-700 dark:rounded"
                   />
                 </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
-                  {imageName}
-                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{imageName}</p>
                 <button
                   type="button"
                   onClick={(e) => {
@@ -470,9 +445,7 @@ export function TransactionPromptForm({
                     ? "Suelta la imagen aquí..."
                     : "Arrastra y suelta una imagen, o haz clic para seleccionar"}
                 </p>
-                <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
-                  PNG, JPG, GIF
-                </p>
+                <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">PNG, JPG, GIF</p>
               </div>
             )}
           </div>
@@ -539,9 +512,7 @@ export function TransactionPromptForm({
           {...register("message")}
         />
         {errors.message && (
-          <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-            {errors.message.message}
-          </p>
+          <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.message.message}</p>
         )}
       </div>
 

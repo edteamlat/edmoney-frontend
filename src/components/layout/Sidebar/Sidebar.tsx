@@ -184,9 +184,7 @@ const Sidebar = () => {
                 {user?.name ? user.name.charAt(0) : "?"}
               </div>
               <div className="ml-3">
-                <p className="text-sm font-medium text-white">
-                  {user?.name || "Usuario"}
-                </p>
+                <p className="text-sm font-medium text-white">{user?.name || "Usuario"}</p>
               </div>
             </div>
           </div>

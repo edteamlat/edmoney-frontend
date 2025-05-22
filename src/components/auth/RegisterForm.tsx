@@ -1,23 +1,20 @@
-"use client";
+"use client"
 
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import React, { useState } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
 
-import {
-  registerSchema,
-  RegisterFormValues,
-} from "@/lib/validations/auth.schema";
-import { authService } from "@/services/auth.service";
-import { CreateUserDto } from "@/types/user.types";
-import { AxiosError } from "axios";
-import { ApiError } from "@/types/error.types";
+import { registerSchema, RegisterFormValues } from "@/lib/validations/auth.schema"
+import { authService } from "@/services/auth.service"
+import { CreateUserDto } from "@/types/user.types"
+import { AxiosError } from "axios"
+import { ApiError } from "@/types/error.types"
 
-import Input from "../ui/Input";
-import { Button } from "../ui/Button";
+import Input from "../ui/Input"
+import { Button } from "../ui/Button"
 
 // interface ApiError {
 //   message: string;
@@ -25,8 +22,8 @@ import { Button } from "../ui/Button";
 // }
 
 export default function RegisterForm() {
-  const router = useRouter();
-  const [authError, setAuthError] = useState<string | null>(null);
+  const router = useRouter()
+  const [authError, setAuthError] = useState<string | null>(null)
 
   const {
     register,
@@ -40,33 +37,33 @@ export default function RegisterForm() {
       password: "",
       confirmPassword: "",
     },
-  });
+  })
 
   const registerMutation = useMutation({
     mutationFn: (data: CreateUserDto) => authService.register(data),
     onSuccess: () => {
-      router.push("/dashboard");
+      router.push("/dashboard")
     },
     onError: (error: ApiError) => {
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
-        "Error al registrar usuario. Inténtalo de nuevo.";
+        "Error al registrar usuario. Inténtalo de nuevo."
 
-      setAuthError(errorMessage);
+      setAuthError(errorMessage)
     },
-  });
+  })
 
   const onSubmit = async (data: RegisterFormValues) => {
-    setAuthError(null);
+    setAuthError(null)
     // Create a new object with only the fields we need
     const registerData: CreateUserDto = {
       name: data.name,
       email: data.email,
       password: data.password,
-    };
-    registerMutation.mutate(registerData);
-  };
+    }
+    registerMutation.mutate(registerData)
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -109,9 +106,7 @@ export default function RegisterForm() {
       />
 
       <Button variant="primary">
-        {isSubmitting || registerMutation.isPending
-          ? "Registrando..."
-          : "Registrarse"}
+        {isSubmitting || registerMutation.isPending ? "Registrando..." : "Registrarse"}
       </Button>
 
       <div className="text-center mt-4">
@@ -126,5 +121,5 @@ export default function RegisterForm() {
         </p>
       </div>
     </form>
-  );
+  )
 }

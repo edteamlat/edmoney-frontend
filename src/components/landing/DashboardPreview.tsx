@@ -21,15 +21,9 @@ export function DashboardPreview() {
               Saldo Actual
             </h3>
             <div className="flex items-baseline mb-4">
-              <span className="text-blue-700 dark:text-blue-400 text-2xl font-bold mr-1">
-                $
-              </span>
-              <span className="text-blue-700 dark:text-blue-400 text-2xl font-bold">
-                2,547.63
-              </span>
-              <span className="text-blue-700 dark:text-blue-400 text-xl font-bold ml-2">
-                USD
-              </span>
+              <span className="text-blue-700 dark:text-blue-400 text-2xl font-bold mr-1">$</span>
+              <span className="text-blue-700 dark:text-blue-400 text-2xl font-bold">2,547.63</span>
+              <span className="text-blue-700 dark:text-blue-400 text-xl font-bold ml-2">USD</span>
             </div>
             <div className="flex mt-3">
               <span className="inline-flex items-center px-2 py-1 rounded text-xs text-green-800 dark:text-green-300 bg-green-100 dark:bg-green-900/40">
@@ -66,12 +60,7 @@ export function DashboardPreview() {
                   viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M20 12H4"
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
                 </svg>
               </span>
             </div>
@@ -87,14 +76,10 @@ export function DashboardPreview() {
                   <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     Alquiler
                   </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">
-                    Vivienda
-                  </div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">Vivienda</div>
                 </div>
               </div>
-              <div className="text-red-600 dark:text-red-400 font-medium">
-                -$450.00
-              </div>
+              <div className="text-red-600 dark:text-red-400 font-medium">-$450.00</div>
             </div>
 
             <div className="flex items-center justify-between">
@@ -106,14 +91,10 @@ export function DashboardPreview() {
                   <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     Salario
                   </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">
-                    Ingresos
-                  </div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">Ingresos</div>
                 </div>
               </div>
-              <div className="text-green-600 dark:text-green-400 font-medium">
-                +$2,500.00
-              </div>
+              <div className="text-green-600 dark:text-green-400 font-medium">+$2,500.00</div>
             </div>
           </div>
         </div>

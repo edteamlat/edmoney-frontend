@@ -1,10 +1,6 @@
 import { BalanceCardProps } from "./types"
 
-const BalanceCard = ({
-  currentBalance,
-  currency,
-  percentChange,
-}: BalanceCardProps) => {
+const BalanceCard = ({ currentBalance, currency, percentChange }: BalanceCardProps) => {
   const formattedBalance = new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
@@ -16,15 +12,11 @@ const BalanceCard = ({
         Saldo Actual
       </h2>
       <div className="flex items-baseline mb-4">
-        <span className="text-blue-700 dark:text-blue-400 text-3xl font-bold mr-1">
-          $
-        </span>
+        <span className="text-blue-700 dark:text-blue-400 text-3xl font-bold mr-1">$</span>
         <span className="text-blue-700 dark:text-blue-400 text-3xl font-bold">
           {formattedBalance}
         </span>
-        <span className="text-blue-700 dark:text-blue-400 text-3xl font-bold ml-2">
-          {currency}
-        </span>
+        <span className="text-blue-700 dark:text-blue-400 text-3xl font-bold ml-2">{currency}</span>
       </div>
 
       <div className="flex items-center">
@@ -35,8 +27,7 @@ const BalanceCard = ({
               : "text-red-800 bg-red-100 dark:text-red-300 dark:bg-red-900/50"
           }`}
         >
-          {percentChange >= 0 ? "↑" : "↓"} {Math.abs(percentChange)}% vs semana
-          anterior
+          {percentChange >= 0 ? "↑" : "↓"} {Math.abs(percentChange)}% vs semana anterior
         </span>
       </div>
     </div>

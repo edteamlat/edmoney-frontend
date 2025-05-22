@@ -42,9 +42,7 @@ export class InputMethodsService {
    * @param id Input method ID
    */
   public async findOne(id: string): Promise<InputMethod> {
-    const response = await this.apiService.get<InputMethodResponse>(
-      `/input-methods/${id}`,
-    )
+    const response = await this.apiService.get<InputMethodResponse>(`/input-methods/${id}`)
     return response.data.inputMethod
   }
 
@@ -52,12 +50,10 @@ export class InputMethodsService {
    * Create a new input method
    * @param createInputMethodDto Input method data to create
    */
-  public async create(
-    createInputMethodDto: CreateInputMethodDto,
-  ): Promise<InputMethod> {
+  public async create(createInputMethodDto: CreateInputMethodDto): Promise<InputMethod> {
     const response = await this.apiService.post<InputMethodResponse>(
       "/input-methods",
-      createInputMethodDto,
+      createInputMethodDto
     )
     return response.data.inputMethod
   }
@@ -69,11 +65,11 @@ export class InputMethodsService {
    */
   public async update(
     id: string,
-    updateInputMethodDto: UpdateInputMethodDto,
+    updateInputMethodDto: UpdateInputMethodDto
   ): Promise<InputMethod> {
     const response = await this.apiService.patch<InputMethodResponse>(
       `/input-methods/${id}`,
-      updateInputMethodDto,
+      updateInputMethodDto
     )
     return response.data.inputMethod
   }

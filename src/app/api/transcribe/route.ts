@@ -15,10 +15,7 @@ export async function POST(request: Request) {
     const audioFile = formData.get("audio") as File
 
     if (!audioFile) {
-      return NextResponse.json(
-        { message: "No audio file provided" },
-        { status: 400 },
-      )
+      return NextResponse.json({ message: "No audio file provided" }, { status: 400 })
     }
 
     // Convert the file to a buffer to use with OpenAI
@@ -38,9 +35,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ text: transcription.text })
   } catch (error) {
     console.error("Error transcribing audio:", error)
-    return NextResponse.json(
-      { message: "Error al transcribir el audio" },
-      { status: 500 },
-    )
+    return NextResponse.json({ message: "Error al transcribir el audio" }, { status: 500 })
   }
 }

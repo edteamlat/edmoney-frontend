@@ -8,13 +8,7 @@ interface FormCheckboxProps {
   className?: string
 }
 
-const FormCheckbox = ({
-  id,
-  label,
-  error,
-  register,
-  className = "",
-}: FormCheckboxProps) => {
+const FormCheckbox = ({ id, label, error, register, className = "" }: FormCheckboxProps) => {
   return (
     <div className={`mb-4 ${className}`}>
       <div className="flex items-center">
@@ -33,11 +27,7 @@ const FormCheckbox = ({
           {label}
         </label>
       </div>
-      {error && (
-        <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-          {error.message}
-        </p>
-      )}
+      {error && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{error.message}</p>}
     </div>
   )
 }

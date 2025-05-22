@@ -67,20 +67,11 @@ const getCategoryIcon = (categoryId: string | undefined): React.ReactNode => {
 }
 
 const TransactionItem = ({ transaction }: TransactionItemProps) => {
-  const {
-    description,
-    amount,
-    transaction_date,
-    type,
-    category_id,
-    category_name,
-  } = transaction
+  const { description, amount, transaction_date, type, category_id, category_name } = transaction
 
   // Convertir la fecha a objeto Date si es un string
   const parsedDate =
-    transaction_date instanceof Date
-      ? transaction_date
-      : new Date(transaction_date)
+    transaction_date instanceof Date ? transaction_date : new Date(transaction_date)
 
   return (
     <div className="flex items-center py-3 border-b border-gray-100 dark:border-gray-700 last:border-b-0">
@@ -99,12 +90,9 @@ const TransactionItem = ({ transaction }: TransactionItemProps) => {
         <p
           className={`text-sm font-medium ${type === TransactionType.INCOME ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}
         >
-          {type === TransactionType.INCOME ? "+" : "-"}$
-          {Math.abs(amount).toFixed(2)}
+          {type === TransactionType.INCOME ? "+" : "-"}${Math.abs(amount).toFixed(2)}
         </p>
-        <p className="text-xs text-gray-500 dark:text-gray-400">
-          {formatDate(parsedDate)}
-        </p>
+        <p className="text-xs text-gray-500 dark:text-gray-400">{formatDate(parsedDate)}</p>
       </div>
 
       <button className="ml-4 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">

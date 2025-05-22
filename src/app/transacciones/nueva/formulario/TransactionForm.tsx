@@ -135,8 +135,7 @@ const TransactionForm = () => {
     onError: (error: any) => {
       console.error("Error creating transaction:", error)
       setErrorMessage(
-        error?.message ||
-          "Error al crear la transacción. Verifica los datos e intenta nuevamente.",
+        error?.message || "Error al crear la transacción. Verifica los datos e intenta nuevamente."
       )
       setIsSubmitting(false)
     },
@@ -164,9 +163,7 @@ const TransactionForm = () => {
     } catch (error: any) {
       console.error("Error al procesar el formulario:", error)
       setErrorMessage(
-        error?.errors?.[0]?.message ||
-          error?.message ||
-          "Error al procesar el formulario",
+        error?.errors?.[0]?.message || error?.message || "Error al procesar el formulario"
       )
       setIsSubmitting(false)
     }
