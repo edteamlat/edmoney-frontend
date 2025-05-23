@@ -4,10 +4,7 @@
  * @param currency The currency code (default: USD)
  * @returns Formatted currency string
  */
-export function formatCurrency(
-  amount: number | string,
-  currency: string = "USD",
-): string {
+export function formatCurrency(amount: number | string, currency: string = "USD"): string {
   // Convert string to number if needed
   const numericAmount = typeof amount === "string" ? parseFloat(amount) : amount
 

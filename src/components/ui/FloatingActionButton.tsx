@@ -44,11 +44,7 @@ export function FloatingActionButton({ options }: FloatingActionButtonProps) {
         onClick={toggleMenu}
         className="w-14 h-14 bg-blue-600 dark:bg-blue-700 rounded-full shadow-lg flex items-center justify-center text-white transition-all hover:bg-blue-700 dark:hover:bg-blue-800"
       >
-        {isOpen ? (
-          <XMarkIcon className="h-6 w-6" />
-        ) : (
-          <PlusIcon className="h-6 w-6" />
-        )}
+        {isOpen ? <XMarkIcon className="h-6 w-6" /> : <PlusIcon className="h-6 w-6" />}
       </button>
     </div>
   )

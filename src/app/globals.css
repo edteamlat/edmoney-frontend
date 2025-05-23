@@ -1,1 +1,37 @@
 @import "tailwindcss";
+
+/* Global scrollbar styles */
+@layer base {
+  /* Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-blue-900) var(--color-gray-800);
+  }
+
+  /* Chrome, Edge, and Safari */
+  *::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  *::-webkit-scrollbar-track {
+    @apply bg-gray-800;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    @apply bg-blue-900 rounded-full;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    @apply bg-blue-900;
+  }
+
+  /* Interactive elements cursor */
+  button,
+  a,
+  [role="button"],
+  input[type="submit"],
+  input[type="button"],
+  input[type="reset"] {
+    @apply cursor-pointer transition-colors;
+  }
+}

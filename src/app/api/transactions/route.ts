@@ -78,9 +78,6 @@ export async function POST(request: Request) {
     return NextResponse.json(parsedResponse)
   } catch (error) {
     console.error("Error creating transaction:", error)
-    return NextResponse.json(
-      { message: "Error al procesar la transacción" },
-      { status: 500 },
-    )
+    return NextResponse.json({ message: "Error al procesar la transacción" }, { status: 500 })
   }
 }

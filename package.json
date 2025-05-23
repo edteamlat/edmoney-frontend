@@ -2,6 +2,10 @@
   "name": "edmoney-frontend",
   "version": "0.1.0",
   "private": true,
+  "volta": {
+    "node": "20.10.0",
+    "yarn": "1.22.19"
+  },
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
@@ -9,7 +13,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@headlessui/react": "^2.2.2",
+    "@headlessui/react": "^2.2.4",
     "@heroicons/react": "^2.2.0",
     "@hookform/resolvers": "^5.0.1",
     "@tanstack/react-query": "^5.75.4",
@@ -41,6 +45,7 @@
     "eslint-plugin-prettier": "^5.2.3",
     "eslint-plugin-promise": "^7.2.1",
     "eslint-plugin-react": "^7.37.4",
+    "eslint-plugin-tailwindcss": "^3.18.0",
     "globals": "^16.0.0",
     "prettier": "^3.5.3",
     "tailwindcss": "^4",

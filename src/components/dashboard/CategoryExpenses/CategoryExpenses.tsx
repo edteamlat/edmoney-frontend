@@ -57,10 +57,7 @@ const DonutChart = ({ categories }: { categories: CategoryExpense[] }) => {
   )
 }
 
-const CategoryExpenses = ({
-  categories,
-  totalAmount,
-}: CategoryExpensesProps) => {
+const CategoryExpenses = ({ categories, totalAmount }: CategoryExpensesProps) => {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -75,9 +72,7 @@ const CategoryExpenses = ({
   return (
     <div className="bg-white rounded-lg shadow-sm">
       <div className="px-6 py-4 border-b border-gray-200">
-        <h3 className="text-base font-medium text-gray-700">
-          Gasto por Categoría (Este Mes)
-        </h3>
+        <h3 className="text-base font-medium text-gray-700">Gasto por Categoría (Este Mes)</h3>
       </div>
       <div className="px-6 py-4">
         <div className="flex">
@@ -88,10 +83,7 @@ const CategoryExpenses = ({
 
         <div className="mt-6">
           <div className="text-sm font-medium text-gray-500 mb-2">
-            Total{" "}
-            <span className="text-black font-semibold">
-              ${formatCurrency(totalAmount)}
-            </span>
+            Total <span className="text-black font-semibold">${formatCurrency(totalAmount)}</span>
           </div>
         </div>
       </div>

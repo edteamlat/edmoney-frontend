@@ -16,8 +16,7 @@ export class ApiService {
     this.api.interceptors.request.use(
       (config) => {
         // Get token from localStorage if it exists
-        const token =
-          typeof window !== "undefined" ? localStorage.getItem("token") : null
+        const token = typeof window !== "undefined" ? localStorage.getItem("token") : null
 
         // Add token to headers if it exists
         if (token) {
@@ -26,7 +25,7 @@ export class ApiService {
 
         return config
       },
-      (error) => Promise.reject(error),
+      (error) => Promise.reject(error)
     )
 
     // Response interceptor
@@ -64,7 +63,7 @@ export class ApiService {
         }
 
         return Promise.reject(error)
-      },
+      }
     )
   }
 
@@ -77,10 +76,7 @@ export class ApiService {
   }
 
   // Generic GET method
-  public async get<T>(
-    url: string,
-    config?: AxiosRequestConfig,
-  ): Promise<AxiosResponse<T>> {
+  public async get<T>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
     return this.api.get<T>(url, config)
   }
 
@@ -88,7 +84,7 @@ export class ApiService {
   public async post<T>(
     url: string,
     data?: unknown,
-    config?: AxiosRequestConfig,
+    config?: AxiosRequestConfig
   ): Promise<AxiosResponse<T>> {
     return this.api.post<T>(url, data, config)
   }
@@ -97,7 +93,7 @@ export class ApiService {
   public async put<T>(
     url: string,
     data?: unknown,
-    config?: AxiosRequestConfig,
+    config?: AxiosRequestConfig
   ): Promise<AxiosResponse<T>> {
     return this.api.put<T>(url, data, config)
   }
@@ -106,16 +102,13 @@ export class ApiService {
   public async patch<T>(
     url: string,
     data?: unknown,
-    config?: AxiosRequestConfig,
+    config?: AxiosRequestConfig
   ): Promise<AxiosResponse<T>> {
     return this.api.patch<T>(url, data, config)
   }
 
   // Generic DELETE method
-  public async delete<T>(
-    url: string,
-    config?: AxiosRequestConfig,
-  ): Promise<AxiosResponse<T>> {
+  public async delete<T>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
     return this.api.delete<T>(url, config)
   }
 
@@ -123,7 +116,7 @@ export class ApiService {
   public async uploadFile<T>(
     url: string,
     formData: FormData,
-    config?: AxiosRequestConfig,
+    config?: AxiosRequestConfig
   ): Promise<AxiosResponse<T>> {
     return this.api.post<T>(url, formData, {
       ...config,
@@ -135,10 +128,7 @@ export class ApiService {
   }
 
   // Download files
-  public async downloadFile(
-    url: string,
-    config?: AxiosRequestConfig,
-  ): Promise<Blob> {
+  public async downloadFile(url: string, config?: AxiosRequestConfig): Promise<Blob> {
     const response = await this.api.get(url, {
       ...config,
       responseType: "blob",

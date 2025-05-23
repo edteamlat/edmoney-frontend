@@ -42,9 +42,11 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     <UserContext.Provider value={{ user, isLoading }}>
       <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
         <Sidebar />
-        <div className="flex-grow overflow-auto dark:bg-gray-900">
-          <main className="p-6">{children}</main>
-          <AddTransactionFAB />
+        <div className="flex-grow dark:bg-gray-900 w-full overflow-y-auto">
+          <div className="max-w-[1200px] mx-auto px-6">
+            <main className="py-6">{children}</main>
+            <AddTransactionFAB />
+          </div>
         </div>
       </div>
     </UserContext.Provider>

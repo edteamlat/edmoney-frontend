@@ -33,7 +33,7 @@ export class PaymentMethodsService {
   public async findAll(
     userId?: string,
     type?: PaymentMethodType,
-    isDefault?: boolean,
+    isDefault?: boolean
   ): Promise<PaymentMethod[]> {
     let url = "/payment-methods"
     const params = new URLSearchParams()
@@ -54,9 +54,7 @@ export class PaymentMethodsService {
    * @param id Payment method ID
    */
   public async findOne(id: string): Promise<PaymentMethod> {
-    const response = await this.apiService.get<PaymentMethodResponse>(
-      `/payment-methods/${id}`,
-    )
+    const response = await this.apiService.get<PaymentMethodResponse>(`/payment-methods/${id}`)
     return response.data.paymentMethod
   }
 
@@ -65,10 +63,7 @@ export class PaymentMethodsService {
    * @param userId User ID
    * @param type Optional payment method type
    */
-  public async findByUser(
-    userId: string,
-    type?: PaymentMethodType,
-  ): Promise<PaymentMethod[]> {
+  public async findByUser(userId: string, type?: PaymentMethodType): Promise<PaymentMethod[]> {
     let url = `/payment-methods/user/${userId}`
     if (type) url += `?type=${type}`
 
@@ -80,12 +75,10 @@ export class PaymentMethodsService {
    * Create a new payment method
    * @param createPaymentMethodDto Payment method data to create
    */
-  public async create(
-    createPaymentMethodDto: CreatePaymentMethodDto,
-  ): Promise<PaymentMethod> {
+  public async create(createPaymentMethodDto: CreatePaymentMethodDto): Promise<PaymentMethod> {
     const response = await this.apiService.post<PaymentMethodResponse>(
       "/payment-methods",
-      createPaymentMethodDto,
+      createPaymentMethodDto
     )
     return response.data.paymentMethod
   }
@@ -97,11 +90,11 @@ export class PaymentMethodsService {
    */
   public async update(
     id: string,
-    updatePaymentMethodDto: UpdatePaymentMethodDto,
+    updatePaymentMethodDto: UpdatePaymentMethodDto
   ): Promise<PaymentMethod> {
     const response = await this.apiService.patch<PaymentMethodResponse>(
       `/payment-methods/${id}`,
-      updatePaymentMethodDto,
+      updatePaymentMethodDto
     )
     return response.data.paymentMethod
   }

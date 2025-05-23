@@ -50,7 +50,6 @@ export interface CreatePaymentMethodDto {
 /**
  * DTO types for updating payment methods
  */
-export interface UpdatePaymentMethodDto
-  extends Partial<CreatePaymentMethodDto> {
+export interface UpdatePaymentMethodDto extends Partial<CreatePaymentMethodDto> {
   id: string
 }

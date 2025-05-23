@@ -1,180 +1,122 @@
-/* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
-import { transactionFormSchema, TransactionFormInputs } from "./types"
+import { useEffect, useState } from "react"
+import { useForm } from "react-hook-form"
+import { useUser } from "../../../../components/layout/DashboardLayout"
+import FormCheckbox from "../../../../components/ui/FormCheckbox"
+import FormDatePicker from "../../../../components/ui/FormDatePicker"
 import FormInput from "../../../../components/ui/FormInput"
 import FormSelect from "../../../../components/ui/FormSelect"
-import FormDatePicker from "../../../../components/ui/FormDatePicker"
-import FormCheckbox from "../../../../components/ui/FormCheckbox"
+import {
+  CURRENCIES,
+  INPUT_METHODS,
+  MOCK_CATEGORIES,
+  MOCK_PAYMENT_METHODS,
+} from "../../../../constants/mocks"
+import { TRANSACTION_TYPES } from "../../../../constants/transactions"
+import { getFormButtonCopy } from "../../../../helpers/form-copy"
+import { getDefaultValues } from "../../../../helpers/transaction-form"
+import {
+  useCreateTransaction,
+  useUpdateTransaction,
+} from "../../../../hooks/useTransactionMutations"
 import { transactionsService } from "../../../../services/transactions.service"
-import { useState } from "react"
-import { TransactionType } from "../../../../types/category.types"
-import { CreateTransactionDto } from "../../../../types/transaction.types"
+import { TransactionFormInputs, transactionFormSchema } from "./types"
+import { TRANSACTION_FORM_MODE } from "@/types/form.types"
 
-// Mock de métodos de entrada (en un entorno real, esto vendría de la API)
-const INPUT_METHODS = {
-  MANUAL_FORM: "46de3252-a59f-4e0b-8afc-b81e65b20013", // ID para el formulario manual
+interface TransactionFormProps {
+  mode?: TRANSACTION_FORM_MODE
+  transactionId?: string
 }
 
-// Mock del ID de usuario (en un entorno real, vendría de autenticación)
-const CURRENT_USER_ID = "b5284458-258c-4d11-bcd6-2cdf4afda913"
-
-const TransactionForm = () => {
+const TransactionForm = ({
+  mode = TRANSACTION_FORM_MODE.CREATE,
+  transactionId,
+}: TransactionFormProps) => {
   const router = useRouter()
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const { user } = useUser()
 
-  // TODO: Replace with real data from backend
-  const mockCategories = [
-    { value: "f47ac10b-58cc-4372-a567-0e02b2c3d479", label: "Alimentación" },
-    { value: "38c4e644-6c23-4b85-9cb4-93e0b91bab92", label: "Transporte" },
-    { value: "1a5f9851-53e1-4f0c-b8ad-76c6b8e4ff37", label: "Salario" },
-    { value: "c71f23c1-4a09-4b8a-b866-4210b13ee7d8", label: "Entretenimiento" },
-    {
-      value: "db3eb5d3-86a6-4d1c-9ca6-6e98baa3d1e6",
-      label: "Transferencia entre cuentas",
-    },
-  ]
+  const userId = user?.id
 
-  const mockPaymentMethods = [
-    { value: "30dd8a7f-cc49-490a-8b0a-855fb2d4451d", label: "PayPal" },
-    {
-      value: "51284ad5-0adc-473e-aa64-cc6dd78c03bd",
-      label: "Transferencia bancaria",
-    },
-    {
-      value: "780e54f4-3a17-4de0-8645-425681bcd3f5",
-      label: "Tarjeta de débito",
-    },
-    {
-      value: "ba384815-d670-47ea-bee1-f919995180ce",
-      label: "Tarjeta de crédito",
-    },
-    { value: "eea04a3a-ab7d-46c4-b90e-4aa8f6c4284d", label: "Efectivo" },
-  ]
+  // Fetch transaction data if in edit mode
+  const { data: transactionData, isLoading: isLoadingTransaction } = useQuery({
+    queryKey: ["transaction", transactionId],
+    queryFn: () => transactionsService.findOne(transactionId!, userId!),
+    enabled: mode === TRANSACTION_FORM_MODE.EDIT && !!transactionId && !!userId,
+  })
 
-  const transactionTypes = [
-    { value: TransactionType.INCOME, label: "Ingreso" },
-    { value: TransactionType.EXPENSE, label: "Gasto" },
-    { value: TransactionType.TRANSFER, label: "Transferencia" },
-  ]
-
-  const currencies = [
-    { value: "USD", label: "USD - Dólar estadounidense" },
-    { value: "EUR", label: "EUR - Euro" },
-    { value: "MXN", label: "MXN - Peso mexicano" },
-  ]
-
-  // Obtener la fecha y hora actual en formato ISO para el valor por defecto
-  const getCurrentDateTimeString = () => {
-    const now = new Date()
-    const year = now.getFullYear()
-    const month = String(now.getMonth() + 1).padStart(2, "0")
-    const day = String(now.getDate()).padStart(2, "0")
-    const hours = String(now.getHours()).padStart(2, "0")
-    const minutes = String(now.getMinutes()).padStart(2, "0")
-
-    return `${year}-${month}-${day}T${hours}:${minutes}`
-  }
+  const { mutate: createTransaction, isPending: isCreating } = useCreateTransaction({
+    setErrorMessage,
+  })
+  const { mutate: updateTransaction, isPending: isUpdating } = useUpdateTransaction({
+    transactionId: transactionId!,
+    setErrorMessage,
+  })
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
+    setValue,
+    reset,
   } = useForm<TransactionFormInputs>({
     resolver: zodResolver(transactionFormSchema) as any,
-    defaultValues: {
-      userId: CURRENT_USER_ID, // ID de usuario en formato UUID
-      inputMethodId: INPUT_METHODS.MANUAL_FORM, // UUID para método de entrada manual
-      type: TransactionType.EXPENSE, // Establecer un valor por defecto
-      currency: "USD",
-      transactionDate: getCurrentDateTimeString(),
-      isRecurring: false,
-    },
+    defaultValues: getDefaultValues(userId, mode, transactionData),
   })
 
-  // Para debug - mostrar valores en tiempo real
-  const watchedValues = watch()
-  console.log("Valores actuales del formulario:", watchedValues)
+  useEffect(() => {
+    if (user?.id) {
+      setValue("userId", user.id)
+    }
+  }, [user])
 
-  const createTransaction = useMutation({
-    mutationFn: async (data: any) => {
-      // Convert to API format
-      const apiData: CreateTransactionDto = {
-        user_id: data.userId,
-        category_id: data.categoryId,
-        payment_method_id: data.paymentMethodId,
-        input_method_id: data.inputMethodId,
-        type: data.type,
-        amount: data.amount,
-        currency: data.currency,
-        transaction_date: data.transactionDate,
-        description: data.description,
-        is_recurring: data.isRecurring,
-        recurring_id: data.recurringId,
-      }
-
-      console.log("Enviando datos a la API:", apiData)
-      try {
-        const result = await transactionsService.create(apiData)
-        console.log("Respuesta de la API:", result)
-        return result
-      } catch (error) {
-        console.error("Error en la llamada a la API:", error)
-        throw error
-      }
-    },
-    onSuccess: () => {
-      console.log("Transacción creada exitosamente, redirigiendo...")
-      router.push("/transacciones")
-    },
-    onError: (error: any) => {
-      console.error("Error creating transaction:", error)
-      setErrorMessage(
-        error?.message ||
-          "Error al crear la transacción. Verifica los datos e intenta nuevamente.",
-      )
-      setIsSubmitting(false)
-    },
-  })
+  useEffect(() => {
+    if (transactionData) {
+      reset(getDefaultValues(userId, mode, transactionData))
+    }
+  }, [transactionData])
 
   const onSubmit = (data: TransactionFormInputs) => {
-    console.log("Formulario enviado con datos:", data)
-    setIsSubmitting(true)
     setErrorMessage(null)
 
     try {
-      // Asegurarse de que inputMethodId sea un UUID válido
       if (!data.inputMethodId || data.inputMethodId === "1") {
         data.inputMethodId = INPUT_METHODS.MANUAL_FORM
       }
 
-      // Asegurarse de que userId sea un UUID válido
       if (!data.userId || data.userId === "1") {
-        data.userId = CURRENT_USER_ID
+        data.userId = user?.id || ""
       }
 
-      // Enviar los datos directamente sin volver a validar con Zod
-      // ya que el resolver de react-hook-form ya los validó
-      createTransaction.mutate(data)
+      if (mode === TRANSACTION_FORM_MODE.EDIT) {
+        updateTransaction(data)
+        return
+      }
+
+      createTransaction(data)
     } catch (error: any) {
-      console.error("Error al procesar el formulario:", error)
       setErrorMessage(
-        error?.errors?.[0]?.message ||
-          error?.message ||
-          "Error al procesar el formulario",
+        error?.errors?.[0]?.message || error?.message || "Error al procesar el formulario"
       )
-      setIsSubmitting(false)
     }
   }
 
   const handleCancel = () => {
     router.back()
   }
+
+  if (mode === TRANSACTION_FORM_MODE.EDIT && isLoadingTransaction) {
+    return (
+      <div className="flex items-center justify-center p-4">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    )
+  }
+
+  const buttonCopy = getFormButtonCopy(mode, isCreating, isUpdating)
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
@@ -188,7 +130,7 @@ const TransactionForm = () => {
         <FormSelect
           id="type"
           label="Tipo de transacción"
-          options={transactionTypes}
+          options={TRANSACTION_TYPES}
           register={register("type")}
           error={errors.type}
           required
@@ -209,7 +151,7 @@ const TransactionForm = () => {
         <FormSelect
           id="currency"
           label="Moneda"
-          options={currencies}
+          options={CURRENCIES}
           register={register("currency")}
           error={errors.currency}
           required
@@ -228,7 +170,7 @@ const TransactionForm = () => {
         <FormSelect
           id="categoryId"
           label="Categoría"
-          options={mockCategories}
+          options={MOCK_CATEGORIES}
           register={register("categoryId")}
           error={errors.categoryId}
         />
@@ -236,7 +178,7 @@ const TransactionForm = () => {
         <FormSelect
           id="paymentMethodId"
           label="Método de pago"
-          options={mockPaymentMethods}
+          options={MOCK_PAYMENT_METHODS}
           register={register("paymentMethodId")}
           error={errors.paymentMethodId}
         />
@@ -267,10 +209,12 @@ const TransactionForm = () => {
         </button>
         <button
           type="submit"
-          disabled={isSubmitting}
-          className="px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-800 disabled:opacity-50"
+          disabled={isCreating || isUpdating}
+          className={`px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-800 disabled:opacity-50 ${
+            (isCreating || isUpdating) && "grayscale"
+          }`}
         >
-          {isSubmitting ? "Guardando..." : "Guardar Transacción"}
+          {buttonCopy}
         </button>
       </div>
     </form>

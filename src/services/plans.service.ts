@@ -45,10 +45,7 @@ export class PlansService {
    * @param createPlanDto Plan data to create
    */
   public async create(createPlanDto: CreatePlanDto): Promise<Plan> {
-    const response = await this.apiService.post<PlanResponse>(
-      "/plans",
-      createPlanDto,
-    )
+    const response = await this.apiService.post<PlanResponse>("/plans", createPlanDto)
     return response.data.plan
   }
 
@@ -58,10 +55,7 @@ export class PlansService {
    * @param updatePlanDto Plan data to update
    */
   public async update(id: string, updatePlanDto: UpdatePlanDto): Promise<Plan> {
-    const response = await this.apiService.patch<PlanResponse>(
-      `/plans/${id}`,
-      updatePlanDto,
-    )
+    const response = await this.apiService.patch<PlanResponse>(`/plans/${id}`, updatePlanDto)
     return response.data.plan
   }
 
@@ -70,9 +64,7 @@ export class PlansService {
    * @param id Plan ID
    */
   public async remove(id: string): Promise<{ message: string }> {
-    const response = await this.apiService.delete<{ message: string }>(
-      `/plans/${id}`,
-    )
+    const response = await this.apiService.delete<{ message: string }>(`/plans/${id}`)
     return response.data
   }
 }

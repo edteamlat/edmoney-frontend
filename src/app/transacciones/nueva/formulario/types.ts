@@ -28,14 +28,11 @@ export const transactionFormSchema = z.object({
   amount: z.string().min(1, "El monto es requerido"),
   currency: z.string().length(3, "La moneda debe tener 3 caracteres"),
   transactionDate: z
-    .union([
-      z.string().min(1, "La fecha de transacción es requerida"),
-      z.date(),
-    ])
+    .union([z.string().min(1, "La fecha de transacción es requerida"), z.date()])
     .transform((val) => (val instanceof Date ? val : new Date(val))),
   description: z.string().optional(),
   isRecurring: z.boolean().default(false),
-  recurringId: z.string().uuid("ID recurrente inválido").optional(),
+  recurringId: z.string().uuid("ID recurrente inválido").optional().nullable(),
 })
 
 // Type inferred from the schema

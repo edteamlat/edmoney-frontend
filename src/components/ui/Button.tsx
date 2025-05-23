@@ -16,16 +16,14 @@ export function Button({
   className = "",
   onClick,
 }: ButtonProps) {
-  const baseClasses =
-    "px-4 py-2 rounded-md font-medium transition-transform hover:-translate-y-1"
+  const baseClasses = "px-4 py-2 rounded-md font-medium transition-transform hover:-translate-y-1"
 
   const variantClasses = {
     primary:
       "bg-blue-700 dark:bg-blue-600 text-white hover:bg-blue-800 dark:hover:bg-blue-700 shadow-lg shadow-blue-700/20 dark:shadow-blue-900/30",
     secondary:
       "bg-white dark:bg-gray-800 text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-700 shadow-lg shadow-blue-800/30 dark:shadow-gray-900/30",
-    outline:
-      "border border-white text-white hover:bg-white/10 dark:hover:bg-white/20",
+    outline: "border border-white text-white hover:bg-white/10 dark:hover:bg-white/20",
   }
 
   const classes = `${baseClasses} ${variantClasses[variant]} ${className}`

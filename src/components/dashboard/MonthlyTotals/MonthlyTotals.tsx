@@ -39,9 +39,7 @@ const MonthlyTotals = ({ income, expense, balance }: MonthlyTotalsProps) => {
 
         <div className="pt-2">
           <div className="flex justify-between items-center mb-1">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Balance
-            </span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Balance</span>
             <span className="text-sm font-semibold dark:text-gray-100">
               + {formatCurrency(balance)}
             </span>

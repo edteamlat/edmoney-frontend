@@ -10,14 +10,10 @@ import Link from "next/link"
 import { loginSchema, LoginFormValues } from "@/lib/validations/auth.schema"
 import { authService } from "@/services/auth.service"
 import { LoginDto } from "@/types/auth.types"
+import { ApiError } from "@/types/error.types"
 
 import Input from "../ui/Input"
 import { Button } from "../ui/Button"
-
-interface ApiError {
-  message: string
-  status?: number
-}
 
 export default function LoginForm() {
   const router = useRouter()
@@ -41,9 +37,12 @@ export default function LoginForm() {
       router.push("/dashboard")
     },
     onError: (error: ApiError) => {
-      setAuthError(
-        error.message || "Error al iniciar sesión. Verifica tus credenciales.",
-      )
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Error al iniciar sesión. Verifica tus credenciales."
+
+      setAuthError(errorMessage)
     },
   })
 
@@ -77,9 +76,7 @@ export default function LoginForm() {
       />
 
       <Button variant="primary">
-        {isSubmitting || loginMutation.isPending
-          ? "Iniciando sesión..."
-          : "Iniciar Sesión"}
+        {isSubmitting || loginMutation.isPending ? "Iniciando sesión..." : "Iniciar Sesión"}
       </Button>
 
       <div className="text-center mt-4">

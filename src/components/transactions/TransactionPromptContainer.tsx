@@ -8,9 +8,7 @@ import { TransactionPromptResponse } from "@/types/transaction-prompt.types"
 export function TransactionPromptContainer() {
   const [isLoading, setIsLoading] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
-  const [response, setResponse] = useState<TransactionPromptResponse | null>(
-    null,
-  )
+  const [response, setResponse] = useState<TransactionPromptResponse | null>(null)
 
   const handleResponse = (responseData: TransactionPromptResponse) => {
     setResponse(responseData)
@@ -33,19 +31,12 @@ export function TransactionPromptContainer() {
               </span>
             </div>
           ) : (
-            <TransactionPromptForm
-              onResponse={handleResponse}
-              setLoading={setIsLoading}
-            />
+            <TransactionPromptForm onResponse={handleResponse} setLoading={setIsLoading} />
           )}
         </div>
       </div>
 
-      <TransactionPromptModal
-        isOpen={modalOpen}
-        onClose={closeModal}
-        response={response}
-      />
+      <TransactionPromptModal isOpen={modalOpen} onClose={closeModal} response={response} />
     </div>
   )
 }

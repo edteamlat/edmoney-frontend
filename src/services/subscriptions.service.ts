@@ -42,9 +42,7 @@ export class SubscriptionsService {
    * @param id Subscription ID
    */
   public async findById(id: string): Promise<Subscription> {
-    const response = await this.apiService.get<SubscriptionResponse>(
-      `/subscriptions/${id}`,
-    )
+    const response = await this.apiService.get<SubscriptionResponse>(`/subscriptions/${id}`)
     return response.data.subscription
   }
 
@@ -54,7 +52,7 @@ export class SubscriptionsService {
    */
   public async findByUserId(userId: string): Promise<Subscription[]> {
     const response = await this.apiService.get<SubscriptionsResponse>(
-      `/subscriptions/user/${userId}`,
+      `/subscriptions/user/${userId}`
     )
     return response.data.subscriptions
   }
@@ -63,12 +61,10 @@ export class SubscriptionsService {
    * Create a new subscription
    * @param createSubscriptionDto Subscription data to create
    */
-  public async create(
-    createSubscriptionDto: CreateSubscriptionDto,
-  ): Promise<Subscription> {
+  public async create(createSubscriptionDto: CreateSubscriptionDto): Promise<Subscription> {
     const response = await this.apiService.post<SubscriptionResponse>(
       "/subscriptions",
-      createSubscriptionDto,
+      createSubscriptionDto
     )
     return response.data.subscription
   }
@@ -80,11 +76,11 @@ export class SubscriptionsService {
    */
   public async update(
     id: string,
-    updateSubscriptionDto: UpdateSubscriptionDto,
+    updateSubscriptionDto: UpdateSubscriptionDto
   ): Promise<Subscription> {
     const response = await this.apiService.patch<SubscriptionResponse>(
       `/subscriptions/${id}`,
-      updateSubscriptionDto,
+      updateSubscriptionDto
     )
     return response.data.subscription
   }
@@ -95,7 +91,7 @@ export class SubscriptionsService {
    */
   public async cancel(id: string): Promise<Subscription> {
     const response = await this.apiService.patch<SubscriptionResponse>(
-      `/subscriptions/${id}/cancel`,
+      `/subscriptions/${id}/cancel`
     )
     return response.data.subscription
   }
@@ -105,9 +101,7 @@ export class SubscriptionsService {
    * @param id Subscription ID
    */
   public async remove(id: string): Promise<{ message: string }> {
-    const response = await this.apiService.delete<{ message: string }>(
-      `/subscriptions/${id}`,
-    )
+    const response = await this.apiService.delete<{ message: string }>(`/subscriptions/${id}`)
     return response.data
   }
 }

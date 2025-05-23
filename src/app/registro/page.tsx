@@ -23,9 +23,7 @@ export default function RegisterPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Logo />
-          <h2 className="mt-4 text-2xl font-bold text-gray-900 dark:text-white">
-            Crea tu cuenta
-          </h2>
+          <h2 className="mt-4 text-2xl font-bold text-gray-900 dark:text-white">Crea tu cuenta</h2>
           <p className="mt-2 text-gray-600 dark:text-gray-400">
             Comienza a gestionar tus finanzas personales
           </p>

@@ -23,10 +23,7 @@ export class AuthService {
    * @param createUserDto User data to register
    */
   public async register(createUserDto: CreateUserDto): Promise<AuthResponse> {
-    const response = await this.apiService.post<AuthResponse>(
-      "/auth/register",
-      createUserDto,
-    )
+    const response = await this.apiService.post<AuthResponse>("/auth/register", createUserDto)
 
     // Store token in localStorage for future requests
     if (response.data.token && typeof window !== "undefined") {
@@ -41,10 +38,7 @@ export class AuthService {
    * @param loginDto Login credentials
    */
   public async login(loginDto: LoginDto): Promise<AuthResponse> {
-    const response = await this.apiService.post<AuthResponse>(
-      "/auth/login",
-      loginDto,
-    )
+    const response = await this.apiService.post<AuthResponse>("/auth/login", loginDto)
 
     // Store token in localStorage for future requests
     if (response.data.token && typeof window !== "undefined") {

@@ -20,8 +20,8 @@ export function Hero() {
             </h1>
 
             <p className="text-lg text-blue-100 max-w-lg">
-              Con EDmoney puedes controlar tus ingresos y gastos fácilmente,
-              establecer metas financieras y tomar el control de tu dinero.
+              Con EDmoney puedes controlar tus ingresos y gastos fácilmente, establecer metas
+              financieras y tomar el control de tu dinero.
             </p>
 
             <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">

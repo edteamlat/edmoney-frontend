@@ -7,20 +7,19 @@ import { useMutation } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 
-import {
-  registerSchema,
-  RegisterFormValues,
-} from "@/lib/validations/auth.schema"
+import { registerSchema, RegisterFormValues } from "@/lib/validations/auth.schema"
 import { authService } from "@/services/auth.service"
 import { CreateUserDto } from "@/types/user.types"
+import { AxiosError } from "axios"
+import { ApiError } from "@/types/error.types"
 
 import Input from "../ui/Input"
 import { Button } from "../ui/Button"
 
-interface ApiError {
-  message: string
-  status?: number
-}
+// interface ApiError {
+//   message: string;
+//   status?: number;
+// }
 
 export default function RegisterForm() {
   const router = useRouter()
@@ -46,9 +45,12 @@ export default function RegisterForm() {
       router.push("/dashboard")
     },
     onError: (error: ApiError) => {
-      setAuthError(
-        error.message || "Error al registrar usuario. Inténtalo de nuevo.",
-      )
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Error al registrar usuario. Inténtalo de nuevo."
+
+      setAuthError(errorMessage)
     },
   })
 
@@ -104,9 +106,7 @@ export default function RegisterForm() {
       />
 
       <Button variant="primary">
-        {isSubmitting || registerMutation.isPending
-          ? "Registrando..."
-          : "Registrarse"}
+        {isSubmitting || registerMutation.isPending ? "Registrando..." : "Registrarse"}
       </Button>
 
       <div className="text-center mt-4">

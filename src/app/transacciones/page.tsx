@@ -2,16 +2,20 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import DashboardLayout from "../../components/layout/DashboardLayout"
 import { transactionsService } from "../../services/transactions.service"
 import { usersService } from "@/services/users.service"
 import { Transaction } from "../../types/transaction.types"
+import { MOCK_CATEGORIES } from "../../constants/mocks"
+import DeleteTransactionModal from "../../components/modals/DeleteTransactionModal"
 
 const TransaccionesPage = () => {
   const router = useRouter()
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [deleteTransactionId, setDeleteTransactionId] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -39,22 +43,20 @@ const TransaccionesPage = () => {
   const formatCategoryName = (categoryId: string | undefined): string => {
     if (!categoryId) return "Sin categoría"
 
-    return (
-      categoryId.replace("cat-", "").charAt(0).toUpperCase() +
-      categoryId.replace("cat-", "").slice(1)
-    )
+    const category = MOCK_CATEGORIES.find((cat) => cat.value === categoryId)
+    return category ? category.label : "Sin categoría"
+  }
+
+  const handleDeleteSuccess = () => {
+    setTransactions(transactions.filter((t) => t.id !== deleteTransactionId))
   }
 
   return (
     <DashboardLayout>
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-            Transacciones
-          </h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">
-            Gestiona tus ingresos y egresos
-          </p>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Transacciones</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">Gestiona tus ingresos y egresos</p>
         </div>
 
         <button
@@ -79,6 +81,12 @@ const TransaccionesPage = () => {
         </button>
       </div>
 
+      <DeleteTransactionModal
+        transactionId={deleteTransactionId}
+        setDeleteTransactionId={setDeleteTransactionId}
+        onSuccess={handleDeleteSuccess}
+      />
+
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
           <h3 className="text-base font-medium text-gray-700 dark:text-gray-300">
@@ -97,9 +105,7 @@ const TransaccionesPage = () => {
 
         {isLoading ? (
           <div className="py-16 text-center">
-            <p className="text-gray-500 dark:text-gray-400">
-              Cargando transacciones...
-            </p>
+            <p className="text-gray-500 dark:text-gray-400">Cargando transacciones...</p>
           </div>
         ) : error ? (
           <div className="py-16 text-center">
@@ -158,9 +164,7 @@ const TransaccionesPage = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-500 dark:text-gray-400">
-                          {new Date(
-                            transaction.transaction_date,
-                          ).toLocaleDateString()}
+                          {new Date(transaction.transaction_date).toLocaleDateString()}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -172,15 +176,20 @@ const TransaccionesPage = () => {
                           }`}
                         >
                           {transaction.type === "income" ? "+" : "-"}$
-                          {Math.abs(transaction.amount).toFixed(2)}{" "}
-                          {transaction.currency}
+                          {Math.abs(transaction.amount).toFixed(2)} {transaction.currency}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                        <button className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 mr-3">
+                        <Link
+                          href={`/transacciones/editar/formulario?transaction=${transaction.id}`}
+                          className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 mr-3"
+                        >
                           Editar
-                        </button>
-                        <button className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300">
+                        </Link>
+                        <button
+                          onClick={() => setDeleteTransactionId(transaction.id)}
+                          className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300"
+                        >
                           Eliminar
                         </button>
                       </td>
@@ -192,9 +201,7 @@ const TransaccionesPage = () => {
 
             {transactions.length === 0 && (
               <div className="py-8 text-center">
-                <p className="text-gray-500 dark:text-gray-400">
-                  No hay transacciones registradas
-                </p>
+                <p className="text-gray-500 dark:text-gray-400">No hay transacciones registradas</p>
               </div>
             )}
           </>
