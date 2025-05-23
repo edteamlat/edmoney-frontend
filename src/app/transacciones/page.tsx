@@ -7,12 +7,14 @@ import { transactionsService } from "../../services/transactions.service"
 import { usersService } from "@/services/users.service"
 import { Transaction } from "../../types/transaction.types"
 import { MOCK_CATEGORIES } from "../../constants/mocks"
+import DeleteTransactionModal from "../../components/modals/DeleteTransactionModal"
 
 const TransaccionesPage = () => {
   const router = useRouter()
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [deleteTransactionId, setDeleteTransactionId] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -44,6 +46,10 @@ const TransaccionesPage = () => {
     return category ? category.label : "Sin categoría"
   }
 
+  const handleDeleteSuccess = () => {
+    setTransactions(transactions.filter((t) => t.id !== deleteTransactionId))
+  }
+
   return (
     <DashboardLayout>
       <div className="flex justify-between items-center mb-6">
@@ -73,6 +79,12 @@ const TransaccionesPage = () => {
           Nueva Transacción
         </button>
       </div>
+
+      <DeleteTransactionModal
+        transactionId={deleteTransactionId}
+        onClose={() => setDeleteTransactionId(null)}
+        onSuccess={handleDeleteSuccess}
+      />
 
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
@@ -170,7 +182,10 @@ const TransaccionesPage = () => {
                         <button className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 mr-3">
                           Editar
                         </button>
-                        <button className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300">
+                        <button
+                          onClick={() => setDeleteTransactionId(transaction.id)}
+                          className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300"
+                        >
                           Eliminar
                         </button>
                       </td>
