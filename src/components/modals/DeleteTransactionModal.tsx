@@ -1,4 +1,6 @@
+import { useTimeout } from "@/hooks/useTimeout"
 import { DialogTitle } from "@headlessui/react"
+import { useEffect, useState } from "react"
 import { useDeleteTransaction } from "../../hooks/useDeleteTransaction"
 import ModalTemplate from "./ModalTemplate"
 import SuccessMessage from "./SuccessMessage"
@@ -11,20 +13,36 @@ interface DeleteTransactionModalProps {
 
 const DeleteTransactionModal = ({
   transactionId,
-  setDeleteTransactionId,
   onSuccess,
+  setDeleteTransactionId,
 }: DeleteTransactionModalProps) => {
-  const { mutate, isPending, isSuccess, isError } = useDeleteTransaction({
-    setDeleteTransactionId,
-    onSuccess,
+  const [isSuccess, setIsSuccess] = useState(false)
+  const { timeoutRef } = useTimeout()
+
+  const handleSuccess = () => {
+    setIsSuccess(true)
+    onSuccess()
+
+    timeoutRef.current = setTimeout(() => {
+      setIsSuccess(false)
+      setDeleteTransactionId(null)
+    }, 1000)
+  }
+
+  const { handleDeleteConfirm, isDeleting } = useDeleteTransaction({
+    onSuccess: handleSuccess,
   })
+
+  // Reset success state when transactionId changes
+  useEffect(() => {
+    setIsSuccess(false)
+  }, [transactionId])
 
   const handleConfirm = async () => {
     if (!transactionId) return
 
-    mutate(transactionId)
+    handleDeleteConfirm(transactionId)
   }
-
   return (
     <ModalTemplate isOpen={!!transactionId} onClose={() => setDeleteTransactionId(null)}>
       {isSuccess && <SuccessMessage />}
@@ -40,7 +58,7 @@ const DeleteTransactionModal = ({
             <button
               type="button"
               onClick={() => setDeleteTransactionId(null)}
-              disabled={isPending}
+              disabled={isDeleting}
               className="inline-flex justify-center rounded-md border border-transparent bg-gray-100 dark:bg-gray-700 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2 disabled:opacity-50"
             >
               Cancelar
@@ -48,16 +66,11 @@ const DeleteTransactionModal = ({
             <button
               type="button"
               onClick={handleConfirm}
-              disabled={isPending}
-              className={`inline-flex justify-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 disabled:opacity-50 ${
-                isPending && "grayscale"
-              }`}
+              disabled={isDeleting}
+              className="inline-flex justify-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 disabled:opacity-50"
             >
-              {isPending ? "Eliminando..." : "Eliminar"}
+              {isDeleting ? "Eliminando..." : "Eliminar"}
             </button>
-            {isError && !isPending && (
-              <p className="text-red-500">Ups! Ocurrió un error al eliminar la transacción.</p>
-            )}
           </div>
         </>
       )}

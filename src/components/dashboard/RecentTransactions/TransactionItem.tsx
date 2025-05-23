@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 import { Transaction } from "../../../types/transaction.types"
 import { TransactionType } from "../../../types/category.types"
+import TransactionOptions from "@/components/transactions/TransactionOptions"
 
 interface TransactionItemProps {
   transaction: Transaction
@@ -86,7 +87,7 @@ const TransactionItem = ({ transaction }: TransactionItemProps) => {
         </p>
       </div>
 
-      <div className="text-right">
+      <div className="text-right mr-4">
         <p
           className={`text-sm font-medium ${type === TransactionType.INCOME ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}
         >
@@ -95,16 +96,7 @@ const TransactionItem = ({ transaction }: TransactionItemProps) => {
         <p className="text-xs text-gray-500 dark:text-gray-400">{formatDate(parsedDate)}</p>
       </div>
 
-      <button className="ml-4 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">
-        <svg
-          className="w-5 h-5"
-          fill="currentColor"
-          viewBox="0 0 20 20"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path>
-        </svg>
-      </button>
+      <TransactionOptions transactionId={transaction.id} />
     </div>
   )
 }
