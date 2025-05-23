@@ -210,9 +210,9 @@ const TransactionForm = ({
         <button
           type="submit"
           disabled={isCreating || isUpdating}
-          className={
-            "px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-800 disabled:opacity-50"
-          }
+          className={`px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-800 disabled:opacity-50 ${
+            (isCreating || isUpdating) && "grayscale"
+          }`}
         >
           {buttonCopy}
         </button>

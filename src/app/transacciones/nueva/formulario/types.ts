@@ -32,7 +32,7 @@ export const transactionFormSchema = z.object({
     .transform((val) => (val instanceof Date ? val : new Date(val))),
   description: z.string().optional(),
   isRecurring: z.boolean().default(false),
-  recurringId: z.string().uuid("ID recurrente inválido").optional(),
+  recurringId: z.string().uuid("ID recurrente inválido").optional().nullable(),
 })
 
 // Type inferred from the schema

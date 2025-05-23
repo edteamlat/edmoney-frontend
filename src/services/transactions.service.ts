@@ -1,15 +1,15 @@
-import { ApiService } from "./api.service"
+import axios from "axios"
 import {
+  CreateTransactionDto,
+  PaginatedTransactions,
+  QueryTransactionsDto,
+  TotalsByPeriodDto,
   Transaction,
   TransactionResponse,
   TransactionsResponse,
-  CreateTransactionDto,
   UpdateTransactionDto,
-  QueryTransactionsDto,
-  PaginatedTransactions,
-  TotalsByPeriodDto,
 } from "../types/transaction.types"
-import axios from "axios"
+import { ApiService } from "./api.service"
 
 export class TransactionsService {
   private apiService: ApiService
@@ -90,10 +90,9 @@ export class TransactionsService {
    * @param userId User ID
    */
   public async findOne(id: string, userId: string): Promise<Transaction> {
-    const response = await this.apiService.get<TransactionResponse>(
-      `/transactions/${id}?userId=${userId}`
-    )
-    return response.data.transaction
+    const response = await this.apiService.get<Transaction>(`/transactions/${id}?userId=${userId}`)
+
+    return response.data
   }
 
   /**

@@ -1,30 +1,39 @@
-import { useState } from "react"
-import { transactionsService } from "../services/transactions.service"
+import { useMutation } from "@tanstack/react-query"
 import { useUser } from "../components/layout/DashboardLayout"
+import { transactionsService } from "../services/transactions.service"
+import { useTimeout } from "./useTimeout"
 
-export const useDeleteTransaction = () => {
-  const [isDeleting, setIsDeleting] = useState(false)
+interface UseDeleteTransactionProps {
+  setDeleteTransactionId: (id: string | null) => void
+  onSuccess: () => void
+}
+
+export const useDeleteTransaction = ({
+  setDeleteTransactionId,
+  onSuccess,
+}: UseDeleteTransactionProps) => {
   const { user } = useUser()
+  const { timeoutRef } = useTimeout()
 
-  const handleDeleteConfirm = async (transactionId: string) => {
-    if (!user) return
-
-    try {
-      setIsDeleting(true)
-
+  const { isPending, isSuccess, mutate, isError } = useMutation({
+    mutationFn: async (transactionId: string) => {
+      if (!user) throw new Error("No user found")
       await transactionsService.remove(transactionId, user.id)
-
       return true
-    } catch (err) {
-      console.error("Error deleting transaction:", err)
-      throw new Error("No se pudo eliminar la transacción")
-    } finally {
-      setIsDeleting(false)
-    }
-  }
+    },
+    onSuccess: () => {
+      onSuccess()
+
+      timeoutRef.current = setTimeout(() => {
+        setDeleteTransactionId(null)
+      }, 1000)
+    },
+  })
 
   return {
-    handleDeleteConfirm,
-    isDeleting,
+    isPending,
+    isSuccess,
+    mutate,
+    isError,
   }
 }

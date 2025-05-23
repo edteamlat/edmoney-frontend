@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react"
 
-export const useTimeout = (callback: () => void, delay: number) => {
+export const useTimeout = () => {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
@@ -12,12 +12,5 @@ export const useTimeout = (callback: () => void, delay: number) => {
     }
   }, [])
 
-  const startTimeout = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current)
-    }
-    timeoutRef.current = setTimeout(callback, delay)
-  }
-
-  return { startTimeout }
+  return { timeoutRef }
 }

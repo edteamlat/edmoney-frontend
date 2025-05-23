@@ -83,7 +83,7 @@ const TransaccionesPage = () => {
 
       <DeleteTransactionModal
         transactionId={deleteTransactionId}
-        onClose={() => setDeleteTransactionId(null)}
+        setDeleteTransactionId={setDeleteTransactionId}
         onSuccess={handleDeleteSuccess}
       />
 
