@@ -24,4 +24,14 @@
   *::-webkit-scrollbar-thumb:hover {
     @apply bg-blue-900;
   }
+
+  /* Interactive elements cursor */
+  button,
+  a,
+  [role="button"],
+  input[type="submit"],
+  input[type="button"],
+  input[type="reset"] {
+    @apply cursor-pointer transition-colors;
+  }
 }

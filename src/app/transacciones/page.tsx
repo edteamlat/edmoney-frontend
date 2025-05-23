@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import DashboardLayout from "../../components/layout/DashboardLayout"
 import { transactionsService } from "../../services/transactions.service"
 import { usersService } from "@/services/users.service"
@@ -179,9 +180,12 @@ const TransaccionesPage = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                        <button className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 mr-3">
+                        <Link
+                          href={`/transacciones/editar/formulario?transaction=${transaction.id}`}
+                          className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 mr-3"
+                        >
                           Editar
-                        </button>
+                        </Link>
                         <button
                           onClick={() => setDeleteTransactionId(transaction.id)}
                           className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300"

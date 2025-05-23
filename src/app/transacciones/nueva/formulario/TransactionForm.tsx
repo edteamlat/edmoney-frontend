@@ -1,67 +1,70 @@
-/* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
-import { transactionFormSchema, TransactionFormInputs } from "./types"
+import { useEffect, useState } from "react"
+import { useForm } from "react-hook-form"
+import { useUser } from "../../../../components/layout/DashboardLayout"
+import FormCheckbox from "../../../../components/ui/FormCheckbox"
+import FormDatePicker from "../../../../components/ui/FormDatePicker"
 import FormInput from "../../../../components/ui/FormInput"
 import FormSelect from "../../../../components/ui/FormSelect"
-import FormDatePicker from "../../../../components/ui/FormDatePicker"
-import FormCheckbox from "../../../../components/ui/FormCheckbox"
-import { transactionsService } from "../../../../services/transactions.service"
-import { useState, useEffect } from "react"
-import { TransactionType } from "../../../../types/category.types"
-import { CreateTransactionDto } from "../../../../types/transaction.types"
-import { useUser } from "../../../../components/layout/DashboardLayout"
 import {
+  CURRENCIES,
   INPUT_METHODS,
   MOCK_CATEGORIES,
   MOCK_PAYMENT_METHODS,
-  CURRENCIES,
 } from "../../../../constants/mocks"
 import { TRANSACTION_TYPES } from "../../../../constants/transactions"
+import { getFormButtonCopy } from "../../../../helpers/form-copy"
+import { getDefaultValues } from "../../../../helpers/transaction-form"
+import {
+  useCreateTransaction,
+  useUpdateTransaction,
+} from "../../../../hooks/useTransactionMutations"
+import { transactionsService } from "../../../../services/transactions.service"
+import { TransactionFormInputs, transactionFormSchema } from "./types"
+import { TRANSACTION_FORM_MODE } from "@/types/form.types"
 
-const TransactionForm = () => {
+interface TransactionFormProps {
+  mode?: TRANSACTION_FORM_MODE
+  transactionId?: string
+}
+
+const TransactionForm = ({
+  mode = TRANSACTION_FORM_MODE.CREATE,
+  transactionId,
+}: TransactionFormProps) => {
   const router = useRouter()
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const { user } = useUser()
 
   const userId = user?.id
 
-  // Obtener la fecha y hora actual en formato ISO para el valor por defecto
-  const getCurrentDateTimeString = () => {
-    const now = new Date()
-    const year = now.getFullYear()
-    const month = String(now.getMonth() + 1).padStart(2, "0")
-    const day = String(now.getDate()).padStart(2, "0")
-    const hours = String(now.getHours()).padStart(2, "0")
-    const minutes = String(now.getMinutes()).padStart(2, "0")
+  // Fetch transaction data if in edit mode
+  const { data: transactionData, isLoading: isLoadingTransaction } = useQuery({
+    queryKey: ["transaction", transactionId],
+    queryFn: () => transactionsService.findOne(transactionId!, userId!),
+    enabled: mode === TRANSACTION_FORM_MODE.EDIT && !!transactionId && !!userId,
+  })
 
-    return `${year}-${month}-${day}T${hours}:${minutes}`
-  }
-
-  const getDefaultValues = () => {
-    return {
-      userId: userId, // ID de usuario en formato UUID
-      inputMethodId: INPUT_METHODS.MANUAL_FORM, // UUID para método de entrada manual
-      type: TransactionType.EXPENSE, // Establecer un valor por defecto
-      currency: "USD",
-      transactionDate: getCurrentDateTimeString(),
-      isRecurring: false,
-    }
-  }
+  const { mutate: createTransaction, isPending: isCreating } = useCreateTransaction({
+    setErrorMessage,
+  })
+  const { mutate: updateTransaction, isPending: isUpdating } = useUpdateTransaction({
+    transactionId: transactionId!,
+    setErrorMessage,
+  })
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
     setValue,
+    reset,
   } = useForm<TransactionFormInputs>({
     resolver: zodResolver(transactionFormSchema) as any,
-    defaultValues: getDefaultValues(),
+    defaultValues: getDefaultValues(userId, mode, transactionData),
   })
 
   useEffect(() => {
@@ -70,81 +73,50 @@ const TransactionForm = () => {
     }
   }, [user])
 
-  // Para debug - mostrar valores en tiempo real
-  const watchedValues = watch()
-  console.log("Valores actuales del formulario:", watchedValues)
-
-  const createTransaction = useMutation({
-    mutationFn: async (data: any) => {
-      // Convert to API format
-      const apiData: CreateTransactionDto = {
-        user_id: data.userId,
-        category_id: data.categoryId,
-        payment_method_id: data.paymentMethodId,
-        input_method_id: data.inputMethodId,
-        type: data.type,
-        amount: data.amount,
-        currency: data.currency,
-        transaction_date: data.transactionDate,
-        description: data.description,
-        is_recurring: data.isRecurring,
-        recurring_id: data.recurringId,
-      }
-
-      console.log("Enviando datos a la API:", apiData)
-      try {
-        const result = await transactionsService.create(apiData)
-        console.log("Respuesta de la API:", result)
-        return result
-      } catch (error) {
-        console.error("Error en la llamada a la API:", error)
-        throw error
-      }
-    },
-    onSuccess: () => {
-      console.log("Transacción creada exitosamente, redirigiendo...")
-      router.push("/transacciones")
-    },
-    onError: (error: any) => {
-      console.error("Error creating transaction:", error)
-      setErrorMessage(
-        error?.message || "Error al crear la transacción. Verifica los datos e intenta nuevamente."
-      )
-      setIsSubmitting(false)
-    },
-  })
+  useEffect(() => {
+    if (transactionData) {
+      reset(getDefaultValues(userId, mode, transactionData))
+    }
+  }, [transactionData])
 
   const onSubmit = (data: TransactionFormInputs) => {
-    console.log("Formulario enviado con datos:", data)
-    setIsSubmitting(true)
     setErrorMessage(null)
 
     try {
-      // Asegurarse de que inputMethodId sea un UUID válido
       if (!data.inputMethodId || data.inputMethodId === "1") {
         data.inputMethodId = INPUT_METHODS.MANUAL_FORM
       }
 
-      // Asegurarse de que userId sea un UUID válido
       if (!data.userId || data.userId === "1") {
         data.userId = user?.id || ""
       }
 
-      // Enviar los datos directamente sin volver a validar con Zod
-      // ya que el resolver de react-hook-form ya los validó
-      createTransaction.mutate(data)
+      if (mode === TRANSACTION_FORM_MODE.EDIT) {
+        updateTransaction(data)
+        return
+      }
+
+      createTransaction(data)
     } catch (error: any) {
-      console.error("Error al procesar el formulario:", error)
       setErrorMessage(
         error?.errors?.[0]?.message || error?.message || "Error al procesar el formulario"
       )
-      setIsSubmitting(false)
     }
   }
 
   const handleCancel = () => {
     router.back()
   }
+
+  if (mode === TRANSACTION_FORM_MODE.EDIT && isLoadingTransaction) {
+    return (
+      <div className="flex items-center justify-center p-4">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    )
+  }
+
+  const buttonCopy = getFormButtonCopy(mode, isCreating, isUpdating)
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
@@ -237,10 +209,12 @@ const TransactionForm = () => {
         </button>
         <button
           type="submit"
-          disabled={isSubmitting}
-          className="px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-800 disabled:opacity-50"
+          disabled={isCreating || isUpdating}
+          className={
+            "px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-800 disabled:opacity-50"
+          }
         >
-          {isSubmitting ? "Guardando..." : "Guardar Transacción"}
+          {buttonCopy}
         </button>
       </div>
     </form>
