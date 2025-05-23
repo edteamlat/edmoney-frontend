@@ -10,63 +10,25 @@ import FormSelect from "../../../../components/ui/FormSelect"
 import FormDatePicker from "../../../../components/ui/FormDatePicker"
 import FormCheckbox from "../../../../components/ui/FormCheckbox"
 import { transactionsService } from "../../../../services/transactions.service"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { TransactionType } from "../../../../types/category.types"
 import { CreateTransactionDto } from "../../../../types/transaction.types"
-
-// Mock de métodos de entrada (en un entorno real, esto vendría de la API)
-const INPUT_METHODS = {
-  MANUAL_FORM: "46de3252-a59f-4e0b-8afc-b81e65b20013", // ID para el formulario manual
-}
-
-// Mock del ID de usuario (en un entorno real, vendría de autenticación)
-const CURRENT_USER_ID = "b5284458-258c-4d11-bcd6-2cdf4afda913"
+import { useUser } from "../../../../components/layout/DashboardLayout"
+import {
+  INPUT_METHODS,
+  MOCK_CATEGORIES,
+  MOCK_PAYMENT_METHODS,
+  CURRENCIES,
+} from "../../../../constants/mocks"
+import { TRANSACTION_TYPES } from "../../../../constants/transactions"
 
 const TransactionForm = () => {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const { user } = useUser()
 
-  // TODO: Replace with real data from backend
-  const mockCategories = [
-    { value: "f47ac10b-58cc-4372-a567-0e02b2c3d479", label: "Alimentación" },
-    { value: "38c4e644-6c23-4b85-9cb4-93e0b91bab92", label: "Transporte" },
-    { value: "1a5f9851-53e1-4f0c-b8ad-76c6b8e4ff37", label: "Salario" },
-    { value: "c71f23c1-4a09-4b8a-b866-4210b13ee7d8", label: "Entretenimiento" },
-    {
-      value: "db3eb5d3-86a6-4d1c-9ca6-6e98baa3d1e6",
-      label: "Transferencia entre cuentas",
-    },
-  ]
-
-  const mockPaymentMethods = [
-    { value: "30dd8a7f-cc49-490a-8b0a-855fb2d4451d", label: "PayPal" },
-    {
-      value: "51284ad5-0adc-473e-aa64-cc6dd78c03bd",
-      label: "Transferencia bancaria",
-    },
-    {
-      value: "780e54f4-3a17-4de0-8645-425681bcd3f5",
-      label: "Tarjeta de débito",
-    },
-    {
-      value: "ba384815-d670-47ea-bee1-f919995180ce",
-      label: "Tarjeta de crédito",
-    },
-    { value: "eea04a3a-ab7d-46c4-b90e-4aa8f6c4284d", label: "Efectivo" },
-  ]
-
-  const transactionTypes = [
-    { value: TransactionType.INCOME, label: "Ingreso" },
-    { value: TransactionType.EXPENSE, label: "Gasto" },
-    { value: TransactionType.TRANSFER, label: "Transferencia" },
-  ]
-
-  const currencies = [
-    { value: "USD", label: "USD - Dólar estadounidense" },
-    { value: "EUR", label: "EUR - Euro" },
-    { value: "MXN", label: "MXN - Peso mexicano" },
-  ]
+  const userId = user?.id
 
   // Obtener la fecha y hora actual en formato ISO para el valor por defecto
   const getCurrentDateTimeString = () => {
@@ -80,22 +42,33 @@ const TransactionForm = () => {
     return `${year}-${month}-${day}T${hours}:${minutes}`
   }
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    watch,
-  } = useForm<TransactionFormInputs>({
-    resolver: zodResolver(transactionFormSchema) as any,
-    defaultValues: {
-      userId: CURRENT_USER_ID, // ID de usuario en formato UUID
+  const getDefaultValues = () => {
+    return {
+      userId: userId, // ID de usuario en formato UUID
       inputMethodId: INPUT_METHODS.MANUAL_FORM, // UUID para método de entrada manual
       type: TransactionType.EXPENSE, // Establecer un valor por defecto
       currency: "USD",
       transactionDate: getCurrentDateTimeString(),
       isRecurring: false,
-    },
+    }
+  }
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    setValue,
+  } = useForm<TransactionFormInputs>({
+    resolver: zodResolver(transactionFormSchema) as any,
+    defaultValues: getDefaultValues(),
   })
+
+  useEffect(() => {
+    if (user?.id) {
+      setValue("userId", user.id)
+    }
+  }, [user])
 
   // Para debug - mostrar valores en tiempo real
   const watchedValues = watch()
@@ -154,7 +127,7 @@ const TransactionForm = () => {
 
       // Asegurarse de que userId sea un UUID válido
       if (!data.userId || data.userId === "1") {
-        data.userId = CURRENT_USER_ID
+        data.userId = user?.id || ""
       }
 
       // Enviar los datos directamente sin volver a validar con Zod
@@ -185,7 +158,7 @@ const TransactionForm = () => {
         <FormSelect
           id="type"
           label="Tipo de transacción"
-          options={transactionTypes}
+          options={TRANSACTION_TYPES}
           register={register("type")}
           error={errors.type}
           required
@@ -206,7 +179,7 @@ const TransactionForm = () => {
         <FormSelect
           id="currency"
           label="Moneda"
-          options={currencies}
+          options={CURRENCIES}
           register={register("currency")}
           error={errors.currency}
           required
@@ -225,7 +198,7 @@ const TransactionForm = () => {
         <FormSelect
           id="categoryId"
           label="Categoría"
-          options={mockCategories}
+          options={MOCK_CATEGORIES}
           register={register("categoryId")}
           error={errors.categoryId}
         />
@@ -233,7 +206,7 @@ const TransactionForm = () => {
         <FormSelect
           id="paymentMethodId"
           label="Método de pago"
-          options={mockPaymentMethods}
+          options={MOCK_PAYMENT_METHODS}
           register={register("paymentMethodId")}
           error={errors.paymentMethodId}
         />

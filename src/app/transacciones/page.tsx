@@ -6,6 +6,7 @@ import DashboardLayout from "../../components/layout/DashboardLayout"
 import { transactionsService } from "../../services/transactions.service"
 import { usersService } from "@/services/users.service"
 import { Transaction } from "../../types/transaction.types"
+import { MOCK_CATEGORIES } from "../../constants/mocks"
 
 const TransaccionesPage = () => {
   const router = useRouter()
@@ -39,10 +40,8 @@ const TransaccionesPage = () => {
   const formatCategoryName = (categoryId: string | undefined): string => {
     if (!categoryId) return "Sin categoría"
 
-    return (
-      categoryId.replace("cat-", "").charAt(0).toUpperCase() +
-      categoryId.replace("cat-", "").slice(1)
-    )
+    const category = MOCK_CATEGORIES.find((cat) => cat.value === categoryId)
+    return category ? category.label : "Sin categoría"
   }
 
   return (
